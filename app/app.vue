@@ -71,6 +71,8 @@ const activeBlocks = computed(() => {
       </label>
     </section>
 
+    <RecorderCard />
+
     <section v-for="song in SONGS" :key="song.title" class="card">
       <h2>{{ song.title }} <span class="muted">· {{ song.artist }}</span></h2>
       <div class="parts">

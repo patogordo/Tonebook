@@ -19,6 +19,19 @@ pnpm dev          # http://localhost:3300
 6. Para gravar, segure o botão **MASTER** do pedal. O site nunca grava nada sozinho: trocar de preset antes de
    salvar descarta as mudanças.
 
+## Gravar vídeo
+
+No computador (Chrome, Edge ou Brave; celular não grava a tela pelo navegador):
+
+1. **Ligar câmera**: ela aparece no canto da página, e o controle **Tamanho** muda o tamanho dela (160 a 720 px).
+2. Marque o som: **Som do NanoCore (USB)**, **Microfone** ou os dois, que entram misturados. O som entra sem os
+   filtros de voz do navegador (cancelamento de eco, redução de ruído, ganho automático), que estragam a guitarra.
+3. **Gravar** e, quando o navegador perguntar o que compartilhar, escolha **esta aba**. O vídeo mostra a página com
+   as configurações e a câmera no canto.
+4. **Parar** e **Baixar vídeo** (MP4; WebM nos navegadores que não gravam MP4).
+
+Na primeira vez, o macOS pede permissão de câmera e microfone para o navegador.
+
 ## Limites do MIDI do pedal
 
 - Modelo de amp, IR da caixa, ordem da cadeia e volume do preset não passam por MIDI. Um preset vazio (como o 64)
