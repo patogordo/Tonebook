@@ -3,6 +3,8 @@
 // cada parâmetro ao vivo e dá nome ao preset. Nada é gravado pelo site: quem salva é o pedal (segurar o MASTER).
 import { BLOCKS, NAME_MAX, blockInfo, cc, paramCC, presetName, renameMessage, toneMessages, type Block, type Tone } from '#shared/nanocore'
 import { SONGS, type Song, type SongPart } from '#shared/songs'
+import { parseSong } from '#shared/import'
+import promptText from '#shared/prompt-ia.md?raw'
 
 type Status = 'idle' | 'unsupported' | 'denied' | 'missing' | 'ready'
 const STATUS_TEXT: Record<Status, string> = {
@@ -19,6 +21,70 @@ const current = ref<{ song: Song, part: SongPart, tone: Tone, slot: number } | n
 const name = ref('')
 let output: MIDIOutput | undefined
 let seq = 1
+
+// Músicas coladas como JSON (de IA) ficam no navegador; o que estiver salvo passa de novo pelo validador ao abrir
+const STORE = 'nanocore-tones:songs'
+const saved = ref<Song[]>(loadSaved())
+const allSongs = computed(() => [...SONGS, ...saved.value])
+const pasted = ref('')
+const importMsg = ref('')
+const importError = ref('')
+const copied = ref(false)
+
+function loadSaved(): Song[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(STORE) ?? '[]') as unknown[]
+    return list.flatMap((s) => {
+      try {
+        return [parseSong(JSON.stringify(s))]
+      } catch {
+        return []
+      }
+    })
+  } catch {
+    return []
+  }
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORE, JSON.stringify(saved.value))
+  } catch {
+    importError.value = 'O navegador não deixou salvar: a música fica só até fechar a aba.'
+  }
+}
+
+async function copyPrompt() {
+  await navigator.clipboard.writeText(promptText)
+  copied.value = true
+  setTimeout(() => (copied.value = false), 2000)
+}
+
+// Confere o JSON, salva (substitui a de mesmo título e artista) e já manda a primeira parte para o pedal
+function importSong() {
+  importError.value = importMsg.value = ''
+  let song: Song
+  try {
+    song = parseSong(pasted.value)
+  } catch (e) {
+    importError.value = (e as Error).message
+    return
+  }
+  const same = (s: Song) => s.title.toLowerCase() === song.title.toLowerCase() && s.artist.toLowerCase() === song.artist.toLowerCase()
+  saved.value = [...saved.value.filter(s => !same(s)), song]
+  persist()
+  pasted.value = ''
+  apply(song, song.parts[0]!)
+  importMsg.value = output
+    ? `${song.title} salva neste navegador e enviada ao preset ${slot.value}.`
+    : `${song.title} salva neste navegador. Conecte ao NanoCore para enviar.`
+}
+
+function removeSong(song: Song) {
+  saved.value = saved.value.filter(s => s !== song)
+  persist()
+  if (current.value?.song === song) current.value = null
+}
 
 async function connect() {
   if (!navigator.requestMIDIAccess) return (status.value = 'unsupported')
@@ -37,7 +103,7 @@ async function connect() {
 
 function apply(song: Song, part: SongPart) {
   if (!output) return
-  const tone = structuredClone(part.tone)
+  const tone = structuredClone(toRaw(part.tone)) // as salvas chegam como proxy reativo, que não clona
   current.value = { song, part, tone, slot: slot.value }
   name.value = presetName((song.title + (song.parts.length > 1 ? part.name : '')).normalize('NFD').replace(/[^A-Za-z0-9]/g, ''))
   // o pedal leva alguns ms para carregar o preset; os CCs antes disso seriam sobrescritos
@@ -81,8 +147,11 @@ const activeBlocks = computed(() => {
 
     <RecorderCard />
 
-    <section v-for="song in SONGS" :key="song.title" class="card">
-      <h2>{{ song.title }} <span class="muted">· {{ song.artist }}</span></h2>
+    <section v-for="song in allSongs" :key="song.title + song.artist" class="card">
+      <h2 class="song-title">
+        <span>{{ song.title }} <span class="muted">· {{ song.artist }}</span></span>
+        <button v-if="saved.includes(song)" class="secondary small" @click="removeSong(song)">Remover</button>
+      </h2>
       <div class="parts">
         <div v-for="part in song.parts" :key="part.name" class="part">
           <div>
@@ -92,6 +161,19 @@ const activeBlocks = computed(() => {
           <button :disabled="status !== 'ready'" @click="apply(song, part)">Enviar</button>
         </div>
       </div>
+    </section>
+
+    <section class="card">
+      <h2>Música nova por IA</h2>
+      <ol class="steps">
+        <li>Copie as instruções, troque a linha <strong>MÚSICA</strong> pelo nome da música e do artista e cole no Claude, no ChatGPT ou em outra IA.</li>
+        <li>Cole abaixo o JSON que ela devolver e clique em <strong>Aplicar e salvar</strong>: o timbre vai para o preset {{ slot }} e fica salvo neste navegador.</li>
+      </ol>
+      <button class="secondary" @click="copyPrompt">{{ copied ? 'Copiado!' : 'Copiar instruções para a IA' }}</button>
+      <textarea v-model="pasted" rows="6" spellcheck="false" placeholder="{ &quot;title&quot;: &quot;…&quot;, &quot;artist&quot;: &quot;…&quot;, &quot;parts&quot;: [ … ] }" />
+      <button :disabled="!pasted.trim()" @click="importSong">Aplicar e salvar</button>
+      <p v-if="importError" class="error">{{ importError }}</p>
+      <p v-if="importMsg" class="ok">{{ importMsg }}</p>
     </section>
 
     <section v-if="current" class="card">
@@ -161,6 +243,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .part { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .steps { margin: 0 0 8px; padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
 .steps strong { color: var(--text); }
+.song-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+button.small { padding: 4px 10px; font-size: 0.85rem; }
+textarea { display: block; width: 100%; margin: 12px 0; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: 0.85rem/1.4 ui-monospace, monospace; }
+.ok { color: var(--ok); margin-top: 8px; font-size: 0.9rem; }
 .name-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0 8px; }
 .name-row label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
 .name-row input { width: 9rem; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; }

@@ -18,6 +18,24 @@ export interface Tone {
 
 export const BLOCKS: Block[] = ['fx1', 'fx2', 'amp', 'cab', 'mod', 'delay', 'reverb', 'eq']
 
+// Modelos de amp e IRs carregados neste pedal (backup do ToneCommand de 2026-11-01). O MIDI não troca o modelo;
+// o site só diz qual escolher, e o JSON vindo de IA só pode usar estes nomes.
+export const AMPS: Record<string, string> = {
+  BogXTC2: 'Bogner Ecstasy, ganho alto', ENGP2: 'ENGL Powerball, ganho alto', Fd59Bm: "Fender '59 Bassman",
+  Fd65Dk: "Fender '65 Deluxe (Darkface), limpo", MarDSL1: 'Marshall DSL50, tom 1', MarDSL2: 'Marshall DSL50, tom 2',
+  Mar8001: 'Marshall JCM800, tom 1', Mar8002: 'Marshall JCM800, tom 2', MesR1: 'Mesa Rectifier, tom 1',
+  MesR2: 'Mesa Rectifier, tom 2', MesR3: 'Mesa Rectifier, tom 3', OgG120: 'Orange Graphic 120',
+  Pey6505: 'Peavey 6505', RoJC120: 'Roland JC-120, limpo', VXAC30: 'Vox AC30', ApSVTVR: 'Ampeg SVT VR (baixo)',
+  ApSVTCL: 'Ampeg SVT CL (baixo)', Adn900: 'Aguilar DB 900 (baixo)', Hiw320: 'Hiwatt 320 (baixo)',
+}
+export const CABS: Record<string, string> = {
+  Bog412A: 'Bogner 4x12', Eng412A: 'ENGL 4x12 A', Eng412B: 'ENGL 4x12 B', FdTR212: 'Fender Twin Reverb 2x12',
+  Fd59BM410: "Fender '59 Bassman 4x10", Mar412A: 'Marshall 4x12', Mar96412A: 'Marshall 1960 4x12 A',
+  Mar96412B: 'Marshall 1960 4x12 B', Mes412C: 'Mesa 4x12', Og412: 'Orange 4x12', pey412A: 'Peavey 4x12',
+  SLO412C: 'Soldano 4x12', AC30212: 'Vox AC30 2x12', AP810: 'Ampeg 8x10 (baixo)', Ap410: 'Ampeg 4x10 (baixo)',
+  Adn410: 'Aguilar 4x10 (baixo)', HiwB410: 'Hiwatt 4x10 (baixo)',
+}
+
 const ON_CC: Record<Block, number> = { fx1: 20, fx2: 21, amp: 23, cab: 24, mod: 25, delay: 26, reverb: 27, eq: 28 }
 const TYPE_CC: Partial<Record<Block, number>> = { fx1: 40, fx2: 41, mod: 45, delay: 46, reverb: 47, eq: 48 }
 const EQ_CC = [91, 92, 93, 94, 95, 96, 97, 33]

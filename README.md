@@ -22,6 +22,18 @@ pnpm dev          # http://localhost:3300
 7. Para gravar, segure o botão **MASTER** do pedal (o nome é salvo junto). O site nunca grava nada sozinho: trocar de preset antes de
    salvar descarta as mudanças.
 
+## Música nova por IA
+
+1. **Copiar instruções para a IA** copia o `shared/prompt-ia.md`: troque a linha `MÚSICA:` pelo nome da música e do
+   artista e cole no Claude, no ChatGPT ou em outra IA. As instruções trazem os efeitos, a ordem e a faixa real de cada
+   parâmetro (do manual), os amps e caixas carregados neste pedal, a guitarra (Les Paul, humbuckers) e as regras de
+   timbre: um timbre só quando a diferença vem da mão, compressor que devolve o volume e assim por diante.
+2. Cole a resposta no campo e clique em **Aplicar e salvar**. O site confere tudo (tipos, quantidade e faixa dos
+   parâmetros, nomes de amp e caixa) e recusa com a explicação do erro; texto ou bloco de código em volta do JSON não
+   atrapalham.
+3. A música vai na hora para o preset de destino e fica salva neste navegador, junto das outras, com **Remover**.
+   Colar de novo uma música com o mesmo título e artista substitui a anterior.
+
 ## Gravar vídeo
 
 No computador (Chrome, Edge ou Brave; celular não grava a tela pelo navegador):
@@ -49,6 +61,9 @@ Na primeira vez, o macOS pede permissão de câmera e microfone para o navegador
 - `shared/nanocore.ts`: mapa de CCs do guia oficial de MIDI (firmware 1.04+) e a tradução de um timbre em mensagens.
 - `shared/songs.ts`: os timbres. Parâmetros de 0 a 1, na ordem do guia; tipos pelos IDs do guia (no reverb,
   4 = Shimmer, 5 = Cloud, 6 = Spring, diferente da ordem do arquivo de preset do ToneCommand).
+- `shared/prompt-ia.md`: as instruções para a IA. O teste confere que elas listam todos os tipos, parâmetros, amps e
+  caixas do código e que o exemplo passa no validador.
+- `shared/import.ts`: o validador do JSON colado.
 - `app/app.vue`: a página.
 
 ```bash
