@@ -188,33 +188,18 @@ export const SONGS: Song[] = [
     artist: 'The White Stripes',
     parts: [
       {
-        // Afinação 0 é o mesmo valor do preset de fábrica OctRiff: −12 st no firmware com faixa de ±12; nos que vão
-        // a ±24 fica −24, ainda afinado (aí 25 dá a oitava)
-        name: 'Riff',
-        hint: 'Microfone do braço. Pitch uma oitava abaixo, só o sinal transposto, como o Whammy que faz a guitarra soar baixo. Se ficar grave demais (duas oitavas), suba a Afinação para 25.',
+        // Um timbre só, que responde à mão: o Muff com pouco ganho comprime menos e deixa a diferença entre o abafado
+        // e o aberto; o gate fica baixo para não cortar as notas abafadas, que chegam mais fracas
+        name: 'Riff e refrão',
+        hint: 'Microfone da ponte. Riff com palm muting: fica fechado e grave. Solte a mão no refrão e o fuzz abre, sem trocar de preset.',
         tone: {
           amp: 'Fd59Bm',
           cab: 'Fd59BM410',
           blocks: {
-            fx1: { on: true, type: 0, params: [0.35] },
-            fx2: { on: true, type: 8, params: [0, 0.5, 1, 0.8] },
-            amp: { on: true, params: [0.5, 0.55, 0.55, 0.55, 0.8] },
-            cab: { on: true, params: [0.3, 0.6, 0.8] },
-            reverb: { on: true, type: 0, params: [0.12, 0.05, 0.6, 0, 0.08, 1] },
-          },
-        },
-      },
-      {
-        name: 'Refrão',
-        hint: 'Microfone da ponte. Big Muff no Bassman, sem a oitava: o riff sobe e explode.',
-        tone: {
-          amp: 'Fd59Bm',
-          cab: 'Fd59BM410',
-          blocks: {
-            fx1: { on: true, type: 0, params: [0.45] },
-            fx2: { on: true, type: 4, params: [0.7, 0.45, 0.65] },
-            amp: { on: true, params: [0.45, 0.5, 0.6, 0.55, 0.8] },
-            cab: { on: true, params: [0.45, 0.6, 0.8] },
+            fx1: { on: true, type: 0, params: [0.3] },
+            fx2: { on: true, type: 4, params: [0.5, 0.45, 0.65] },
+            amp: { on: true, params: [0.5, 0.55, 0.6, 0.55, 0.8] },
+            cab: { on: true, params: [0.35, 0.6, 0.8] },
             reverb: { on: true, type: 0, params: [0.12, 0.05, 0.6, 0, 0.1, 1] },
           },
         },
