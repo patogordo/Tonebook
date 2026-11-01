@@ -53,6 +53,33 @@ export function toneMessages(tone: Tone, slot: number): number[][] {
   return out
 }
 
+// SysEx do próprio ToneCommand (não documentado; lido das respostas do pedal enquanto o app renomeava um preset).
+// Quadro: F0 7D 4E 43 70 <dados> F7. Dados: [02][seq u16][comando u16][tamanho u16][conteúdo], little-endian,
+// em grupos de 7 bytes: um byte com os bits altos (bit i = bit 7 do i-ésimo) e os 7 bytes com 7 bits.
+export function pack7(raw: number[]): number[] {
+  const out: number[] = []
+  for (let i = 0; i < raw.length; i += 7) {
+    const group = raw.slice(i, i + 7)
+    out.push(group.reduce((msb, b, j) => msb | (b >> 7) << j, 0), ...group.map(b => b & 0x7f))
+  }
+  return out
+}
+
+export function sysex(seq: number, command: number, data: number[]): number[] {
+  const u16 = (n: number) => [n & 0xff, n >> 8 & 0xff]
+  return [0xf0, 0x7d, 0x4e, 0x43, 0x70, ...pack7([0x02, ...u16(seq), ...u16(command), ...u16(data.length), ...data]), 0xf7]
+}
+
+// Nomes dos presets de fábrica e do app têm até 8 caracteres ASCII; acento vira a letra sem acento
+export const NAME_MAX = 8
+export const presetName = (text: string) => text.normalize('NFD').replace(/[^\x20-\x7e]/g, '').slice(0, NAME_MAX)
+
+// Renomeia o preset ativo (comando 0x6d, subcomando 0x08, como o app faz). Vale até trocar de preset: o MASTER salva.
+export function renameMessage(name: string, seq: number): number[] {
+  const bytes = [...presetName(name)].map(c => c.charCodeAt(0))
+  return sysex(seq, 0x6d, [0x08, bytes.length, ...bytes])
+}
+
 const DRIVE = ['Ganho', 'Tom', 'Volume']
 const RATE_FB = ['Velocidade', 'Realimentação', 'Mix', 'Volume']
 const TIME_FB = (...mid: string[]) => ['Tempo', 'Realimentação', ...mid, 'Mix', 'Volume']

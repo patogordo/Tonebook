@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Uma página: conecta ao NanoCore pelo Web MIDI, leva o preset escolhido ao timbre de uma música e deixa ajustar
-// cada parâmetro ao vivo. Nada é gravado pelo site: quem salva é o pedal (segurar o MASTER).
-import { BLOCKS, blockInfo, cc, paramCC, toneMessages, type Block, type Tone } from '#shared/nanocore'
+// cada parâmetro ao vivo e dá nome ao preset. Nada é gravado pelo site: quem salva é o pedal (segurar o MASTER).
+import { BLOCKS, NAME_MAX, blockInfo, cc, paramCC, presetName, renameMessage, toneMessages, type Block, type Tone } from '#shared/nanocore'
 import { SONGS, type Song, type SongPart } from '#shared/songs'
 
 type Status = 'idle' | 'unsupported' | 'denied' | 'missing' | 'ready'
@@ -16,12 +16,14 @@ const STATUS_TEXT: Record<Status, string> = {
 const status = ref<Status>('idle')
 const slot = ref(64)
 const current = ref<{ song: Song, part: SongPart, tone: Tone, slot: number } | null>(null)
+const name = ref('')
 let output: MIDIOutput | undefined
+let seq = 1
 
 async function connect() {
   if (!navigator.requestMIDIAccess) return (status.value = 'unsupported')
   try {
-    const access = await navigator.requestMIDIAccess()
+    const access = await navigator.requestMIDIAccess({ sysex: true }) // o nome do preset vai por SysEx
     const pick = () => {
       output = [...access.outputs.values()].find(o => /nanocore/i.test(o.name ?? ''))
       status.value = output ? 'ready' : 'missing'
@@ -37,9 +39,15 @@ function apply(song: Song, part: SongPart) {
   if (!output) return
   const tone = structuredClone(part.tone)
   current.value = { song, part, tone, slot: slot.value }
+  name.value = presetName((song.title + (song.parts.length > 1 ? part.name : '')).normalize('NFD').replace(/[^A-Za-z0-9]/g, ''))
   // o pedal leva alguns ms para carregar o preset; os CCs antes disso seriam sobrescritos
   const t = performance.now()
-  toneMessages(tone, slot.value).forEach((m, i) => output!.send(m, i ? t + 150 + i * 4 : t))
+  ;[...toneMessages(tone, slot.value), renameMessage(name.value, seq++)].forEach((m, i) => output!.send(m, i ? t + 150 + i * 4 : t))
+}
+
+// renomeia o preset ativo, que é o que acabou de receber o timbre
+function rename() {
+  output?.send(renameMessage(name.value, seq++))
 }
 
 function tweak(block: Block, index: number, value: number) {
@@ -91,8 +99,20 @@ const activeBlocks = computed(() => {
       <ol class="steps">
         <li>No pedal, escolha o amp <strong>{{ current.tone.amp }}</strong> e a caixa <strong>{{ current.tone.cab }}</strong> (modelo de amp e IR não passam por MIDI).</li>
         <li>Toque e ajuste abaixo; cada mudança vai na hora para o pedal.</li>
-        <li>Gostou? Segure o botão <strong>MASTER</strong> do pedal para gravar no preset {{ current.slot }}.</li>
+        <li>O nome já foi junto; mude abaixo se quiser.</li>
+        <li>Gostou? Segure o botão <strong>MASTER</strong> do pedal para gravar no preset {{ current.slot }}, com o nome.</li>
       </ol>
+      <form class="name-row" @submit.prevent="rename">
+        <label>
+          Nome no pedal
+          <input
+            :value="name" :maxlength="NAME_MAX" required
+            @input="name = presetName(($event.target as HTMLInputElement).value)"
+          >
+        </label>
+        <button type="submit">Mudar nome</button>
+        <span class="muted">Até {{ NAME_MAX }} caracteres, sem acento. Vale para o preset ativo no pedal.</span>
+      </form>
       <div v-for="{ block, state, info } in activeBlocks" :key="block" class="block">
         <h3>{{ info.name }}</h3>
         <label v-for="(label, i) in info.params" :key="label" class="param">
@@ -141,6 +161,9 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .part { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .steps { margin: 0 0 8px; padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
 .steps strong { color: var(--text); }
+.name-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0 8px; }
+.name-row label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+.name-row input { width: 9rem; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; }
 .param { display: grid; grid-template-columns: 9.5rem 1fr 2.5rem; align-items: center; gap: 8px; font-size: 0.9rem; }
 .param input { width: 100%; accent-color: var(--brand); }
 .param output { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }

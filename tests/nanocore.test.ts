@@ -1,7 +1,7 @@
 // node --test (Node 22.18+ roda TypeScript direto)
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { BLOCKS, blockInfo, toneMessages, type Tone } from '../shared/nanocore.ts'
+import { BLOCKS, blockInfo, pack7, presetName, renameMessage, toneMessages, type Tone } from '../shared/nanocore.ts'
 import { SONGS } from '../shared/songs.ts'
 
 const fuzz: Tone = { amp: 'VXAC30', cab: 'AC30212', blocks: {
@@ -42,4 +42,19 @@ test('todo timbre tem tipos e parâmetros que existem e valores entre 0 e 1', ()
     assert.equal(state.params?.length ?? 0, info.params.length, `${song.title} ${part.name} ${block}`)
     assert.ok(state.params?.every(v => v >= 0 && v <= 1) ?? true)
   }
+})
+
+test('empacota em 7 bits igual ao pedal (resposta de batimento capturada do NanoCore)', () => {
+  // F0 7D 4E 43 71 02 02 10 12 68 00 00 04 08 00 02 01 08 13 F7: seq 0x1290, comando 0x68, status 0, 4 bytes
+  const raw = [0x02, 0x90, 0x12, 0x68, 0x00, 0x00, 0x04, 0x00, 0x02, 0x01, 0x88, 0x13]
+  assert.deepEqual(pack7(raw), [0x02, 0x02, 0x10, 0x12, 0x68, 0x00, 0x00, 0x04, 0x08, 0x00, 0x02, 0x01, 0x08, 0x13])
+})
+
+test('renomear manda o comando 0x6d, subcomando 0x08, com o nome limpo', () => {
+  const msg = renameMessage('Ação!', 1)
+  assert.deepEqual(msg.slice(0, 5), [0xf0, 0x7d, 0x4e, 0x43, 0x70])
+  assert.equal(msg.at(-1), 0xf7)
+  // [02][seq 1][0x6d][tamanho 7][08 05 "Acao!"], em grupos de 7
+  assert.deepEqual(msg.slice(5, -1), pack7([0x02, 1, 0, 0x6d, 0, 7, 0, 0x08, 5, ...[...'Acao!'].map(c => c.charCodeAt(0))]))
+  assert.equal(presetName('Seven Nation Army'), 'Seven Na')
 })

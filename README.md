@@ -12,11 +12,14 @@ pnpm dev          # http://localhost:3300
 
 1. Ligue o NanoCore no USB e abra o site no Chrome, no Edge ou no Brave (computador ou Android). Safari e iPhone
    não têm Web MIDI.
-2. **Conectar ao NanoCore** e permita o acesso ao MIDI quando o navegador pedir.
+2. **Conectar ao NanoCore** e permita o acesso ao MIDI quando o navegador pedir (inclusive "controlar e reprogramar
+   dispositivos MIDI": é por ele que vai o nome do preset).
 3. Escolha o preset de destino (padrão: 64) e clique em **Enviar** na parte da música.
 4. No pedal, escolha o amp e a caixa indicados. O MIDI do NanoCore não troca o modelo de amp nem a IR.
 5. Toque e ajuste nos controles: cada mudança vai na hora para o pedal.
-6. Para gravar, segure o botão **MASTER** do pedal. O site nunca grava nada sozinho: trocar de preset antes de
+6. O nome do preset vai junto com o timbre (até 8 caracteres, sem acento). Para trocar, edite **Nome no pedal** e
+   clique em **Mudar nome**; vale para o preset ativo.
+7. Para gravar, segure o botão **MASTER** do pedal (o nome é salvo junto). O site nunca grava nada sozinho: trocar de preset antes de
    salvar descarta as mudanças.
 
 ## Gravar vídeo
@@ -34,6 +37,9 @@ Na primeira vez, o macOS pede permissão de câmera e microfone para o navegador
 
 ## Limites do MIDI do pedal
 
+- O nome não está no guia de MIDI: vai pelo SysEx do próprio ToneCommand (`F0 7D 4E 43 70 … F7`, comando `0x6d`,
+  subcomando `0x08`), descoberto pelas respostas do pedal enquanto o app renomeava um preset. Uma atualização de
+  firmware pode mudar isso; o pedal responde com status 0 quando aceita.
 - Modelo de amp, IR da caixa, ordem da cadeia e volume do preset não passam por MIDI. Um preset vazio (como o 64)
   abre com volume 100, mais alto que os de fábrica (por volta de 85).
 - Pitch e wahs do bloco de drive usam os mesmos CCs da modulação: com um deles ligado, mexer na modulação mexe nele.
