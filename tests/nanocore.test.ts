@@ -19,12 +19,14 @@ test('tipo vem antes dos parâmetros, e os CCs batem com o guia', () => {
   assert.ok(at([0xb0, 21, 127]) > 0) // drive ligado
 })
 
-test('compressor e EQ de 8 bandas usam os CCs próprios', () => {
+test('compressor, pitch e EQ de 8 bandas usam os CCs próprios', () => {
   const msgs = toneMessages({ amp: '', cab: '', blocks: {
     fx1: { on: true, type: 3, params: [1] },
+    fx2: { on: true, type: 8, params: [0, 0.5, 1] },
     eq: { on: true, type: 2, params: [0, 0, 0, 0, 0, 0, 0, 1] },
   } }, 1).map(m => m.join(','))
   assert.ok(msgs.includes('176,51,127'))
+  assert.ok(msgs.includes('176,70,127')) // mix do pitch vai nos CCs da modulação
   assert.ok(msgs.includes('176,33,127'))
 })
 

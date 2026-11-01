@@ -1,7 +1,7 @@
 # NanoCore Tones
 
 Site que leva um preset do LIVTRA NanoCore ao timbre de músicas conhecidas, pelo USB MIDI do próprio pedal.
-Por enquanto: **Let It Happen** (Tame Impala), partes limpa e com fuzz, **Creep** (Radiohead), estrofe e refrão, **No Surprises** (Radiohead), o arpejo limpo, **Jane!** (The Long Faces), riff e solo, e **Come As You Are** (Nirvana), riff limpo e refrão com o solo.
+Por enquanto: **Let It Happen** (Tame Impala), partes limpa e com fuzz, **Creep** (Radiohead), estrofe e refrão, **No Surprises** (Radiohead), o arpejo limpo, **Jane!** (The Long Faces), riff e solo, **Come As You Are** (Nirvana), riff limpo e refrão com o solo, e **Seven Nation Army** (The White Stripes), riff uma oitava abaixo e refrão com fuzz.
 
 ## Como usar
 
