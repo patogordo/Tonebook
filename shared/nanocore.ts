@@ -147,18 +147,44 @@ export function pack7(raw: number[]): number[] {
   return out
 }
 
+export function unpack7(packed: number[]): number[] {
+  const out: number[] = []
+  for (let i = 0; i < packed.length; i += 8) {
+    const msb = packed[i]!
+    packed.slice(i + 1, i + 8).forEach((b, j) => out.push(b | (((msb >> j) & 1) << 7)))
+  }
+  return out
+}
+
+const HEADER = [0xf0, 0x7d, 0x4e, 0x43]
+
 export function sysex(seq: number, command: number, data: number[]): number[] {
   const u16 = (n: number) => [n & 0xff, (n >> 8) & 0xff]
-  return [
-    0xf0,
-    0x7d,
-    0x4e,
-    0x43,
-    0x70,
-    ...pack7([0x02, ...u16(seq), ...u16(command), ...u16(data.length), ...data]),
-    0xf7,
-  ]
+  return [...HEADER, 0x70, ...pack7([0x02, ...u16(seq), ...u16(command), ...u16(data.length), ...data]), 0xf7]
 }
+
+// O que o pedal manda: resposta a um pedido (0x71, com o status; 0 = aceito) ou aviso (0x72, ex.: 0x60 = preset ativo)
+export interface PedalMessage {
+  kind: 'response' | 'notice'
+  seq: number
+  command: number
+  status: number
+  data: number[]
+}
+
+export function parseSysex(message: ArrayLike<number>): PedalMessage | null {
+  const bytes = Array.from(message)
+  const isOurs = HEADER.every((b, i) => bytes[i] === b) && bytes.at(-1) === 0xf7
+  if (!isOurs || (bytes[4] !== 0x71 && bytes[4] !== 0x72)) return null
+  const raw = unpack7(bytes.slice(5, -1))
+  const u16 = (i: number) => (raw[i] ?? 0) | ((raw[i + 1] ?? 0) << 8)
+  if (bytes[4] === 0x71) {
+    return { kind: 'response', seq: u16(1), command: u16(3), status: raw[5] ?? -1, data: raw.slice(8, 8 + u16(6)) }
+  }
+  return { kind: 'notice', seq: 0, command: u16(1), status: 0, data: raw.slice(5, 5 + u16(3)) }
+}
+
+export const NOTICE_ACTIVE_PRESET = 0x60
 
 // Nomes dos presets de fábrica e do app têm até 8 caracteres ASCII; acento vira a letra sem acento
 export const NAME_MAX = 8
@@ -168,7 +194,13 @@ export const presetName = (text: string) =>
     .replace(/[^\x20-\x7e]/g, '')
     .slice(0, NAME_MAX)
 
-// Renomeia o preset ativo (comando 0x6d, subcomando 0x08, como o app faz). Vale até trocar de preset: o MASTER salva.
+// Renomeia o preset ativo (comando 0x6d, subcomando 0x08, como o app faz). Vale até trocar de preset; saveMessage grava.
+// Grava o preset ativo na memória do pedal (comando 0x46 com o número do preset, como o botão de salvar do app).
+// Só com o preset ativo: o app nunca mandou outro número, e não se sabe o que o pedal faz nesse caso.
+export function saveMessage(slot: number, seq: number): number[] {
+  return sysex(seq, 0x46, [slot - 1])
+}
+
 export function renameMessage(name: string, seq: number): number[] {
   const bytes = [...presetName(name)].map(c => c.charCodeAt(0))
   return sysex(seq, 0x6d, [0x08, bytes.length, ...bytes])

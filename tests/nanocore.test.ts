@@ -1,7 +1,19 @@
 // node --test (Node 22.18+ roda TypeScript direto)
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { BLOCKS, blockInfo, pack7, presetName, renameMessage, toneMessages, type Tone } from '../shared/nanocore.ts'
+import {
+  BLOCKS,
+  NOTICE_ACTIVE_PRESET,
+  blockInfo,
+  pack7,
+  parseSysex,
+  presetName,
+  renameMessage,
+  saveMessage,
+  toneMessages,
+  unpack7,
+  type Tone,
+} from '../shared/nanocore.ts'
 import { SONGS } from '../shared/songs.ts'
 
 const fuzz: Tone = {
@@ -73,4 +85,27 @@ test('renomear manda o comando 0x6d, subcomando 0x08, com o nome limpo', () => {
     pack7([0x02, 1, 0, 0x6d, 0, 7, 0, 0x08, 5, ...[...'Acao!'].map(c => c.charCodeAt(0))]),
   )
   assert.equal(presetName('Seven Nation Army'), 'Seven Na')
+})
+
+test('lê as respostas e os avisos do pedal (mensagens capturadas)', () => {
+  // resposta ao "salvar" do app: comando 0x46, status 0, preset 53 (slot 0x34)
+  const save = [0xf0, 0x7d, 0x4e, 0x43, 0x71, 0x02, 0x02, 0x0b, 0x28, 0x46, 0x00, 0x00, 0x01, 0x00, 0x00, 0x34, 0xf7]
+  assert.deepEqual(parseSysex(save), { kind: 'response', seq: 0x288b, command: 0x46, status: 0, data: [0x34] })
+  // aviso de preset ativo: 0x60, preset 52 (slot 0x33)
+  const active = [0xf0, 0x7d, 0x4e, 0x43, 0x72, 0x00, 0x02, 0x60, 0x00, 0x01, 0x00, 0x33, 0xf7]
+  assert.deepEqual(parseSysex(active), {
+    kind: 'notice',
+    seq: 0,
+    command: NOTICE_ACTIVE_PRESET,
+    status: 0,
+    data: [0x33],
+  })
+  assert.equal(parseSysex([0xb0, 20, 127]), null)
+})
+
+test('salvar manda o comando 0x46 com o preset, e o empacotamento ida e volta não perde nada', () => {
+  const msg = saveMessage(53, 7)
+  assert.deepEqual(unpack7(msg.slice(5, -1)), [0x02, 7, 0, 0x46, 0, 1, 0, 0x34])
+  const bytes = Array.from({ length: 300 }, (_, i) => (i * 37) & 0xff)
+  assert.deepEqual(unpack7(pack7(bytes)), bytes)
 })

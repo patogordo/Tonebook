@@ -1,16 +1,21 @@
 <script setup lang="ts">
-// Uma página: conecta ao NanoCore pelo Web MIDI, leva o preset escolhido ao timbre de uma música e deixa ajustar
-// cada parâmetro ao vivo e dá nome ao preset. Nada é gravado pelo site: quem salva é o pedal (segurar o MASTER).
+// Uma página: conecta ao NanoCore pelo Web MIDI, leva o preset escolhido ao timbre de uma música, deixa ajustar
+// cada parâmetro ao vivo, dá nome e salva. Só grava na memória do pedal quando a pessoa clica em salvar, e só no
+// preset que recebeu o timbre.
 import {
   BLOCKS,
   NAME_MAX,
+  NOTICE_ACTIVE_PRESET,
   blockInfo,
   cc,
   paramCC,
+  parseSysex,
   presetName,
   renameMessage,
+  saveMessage,
   toneMessages,
   type Block,
+  type PedalMessage,
   type Tone,
 } from '#shared/nanocore'
 import { SONGS, type Song, type SongPart } from '#shared/songs'
@@ -32,7 +37,45 @@ const current = ref<{ song: Song; part: SongPart; tone: Tone; slot: number } | n
 const name = ref('')
 let output: MIDIOutput | undefined
 const { baseURL } = useRuntimeConfig().app // no GitHub Pages o site fica em /Tonebook/
+
+// Preset ativo no pedal: o site sabe quando manda a troca, e o pedal avisa quando a pessoa troca nele
+const activeSlot = ref<number | null>(null)
+const saving = ref(false)
+const saveMsg = ref('')
+const saveError = ref('')
+
+// Pedidos por SysEx levam um número de sequência, que o pedal repete na resposta
 let seq = 1
+const nextSeq = () => {
+  const s = seq
+  seq = (seq % 0xffff) + 1
+  return s
+}
+const waiting = new Map<number, (reply: PedalMessage) => void>()
+
+function onPedalMessage(event: MIDIMessageEvent) {
+  const message = event.data && parseSysex(event.data)
+  if (!message) return
+  if (message.kind === 'notice' && message.command === NOTICE_ACTIVE_PRESET) activeSlot.value = message.data[0]! + 1
+  if (message.kind === 'response') waiting.get(message.seq)?.(message)
+}
+
+// Manda um pedido e espera a resposta do pedal (null se ele não responder em 3 s)
+function request(build: (seq: number) => number[]): Promise<PedalMessage | null> {
+  const s = nextSeq()
+  return new Promise(resolve => {
+    const timer = setTimeout(() => {
+      waiting.delete(s)
+      resolve(null)
+    }, 3000)
+    waiting.set(s, reply => {
+      clearTimeout(timer)
+      waiting.delete(s)
+      resolve(reply)
+    })
+    output!.send(build(s))
+  })
+}
 
 // Músicas coladas como JSON (de IA) ficam no navegador; o que estiver salvo passa de novo pelo validador ao abrir
 const STORE = 'tonebook:songs'
@@ -105,6 +148,8 @@ async function connect() {
     const access = await navigator.requestMIDIAccess({ sysex: true }) // o nome do preset vai por SysEx
     const pick = () => {
       output = [...access.outputs.values()].find(o => /nanocore/i.test(o.name ?? ''))
+      const input = [...access.inputs.values()].find(i => /nanocore/i.test(i.name ?? ''))
+      if (input) input.onmidimessage = onPedalMessage
       status.value = output ? 'ready' : 'missing'
     }
     access.onstatechange = pick
@@ -118,21 +163,45 @@ function apply(song: Song, part: SongPart) {
   if (!output) return
   const tone = structuredClone(toRaw(part.tone)) // as salvas chegam como proxy reativo, que não clona
   current.value = { song, part, tone, slot: slot.value }
+  activeSlot.value = slot.value
+  saveMsg.value = saveError.value = ''
 
   // nome sugerido: título (e parte, se houver mais de uma) só com letras e números, até 8 caracteres
   const label = song.parts.length > 1 ? song.title + part.name : song.title
   name.value = presetName(label.normalize('NFD').replace(/[^A-Za-z0-9]/g, ''))
 
   // a troca de preset vai na hora; o resto espera 150 ms, porque o pedal sobrescreve o que chega enquanto carrega
-  const [programChange, ...rest] = [...toneMessages(tone, slot.value), renameMessage(name.value, seq++)]
+  const [programChange, ...rest] = [...toneMessages(tone, slot.value), renameMessage(name.value, nextSeq())]
   const start = performance.now()
   output.send(programChange!, start)
   rest.forEach((message, i) => output!.send(message, start + 150 + i * 4))
 }
 
-// renomeia o preset ativo, que é o que acabou de receber o timbre
+// Nome e gravação valem para o preset ativo; se a pessoa trocou de preset no pedal, não mexe em outro
+function pedalOnCurrent(): boolean {
+  saveMsg.value = saveError.value = ''
+  const target = current.value!.slot
+  if (activeSlot.value === target) return true
+  saveError.value = `O pedal está no preset ${activeSlot.value ?? '?'}, não no ${target}. Envie o timbre de novo.`
+  return false
+}
+
 function rename() {
-  output?.send(renameMessage(name.value, seq++))
+  if (pedalOnCurrent()) output?.send(renameMessage(name.value, nextSeq()))
+}
+
+// Grava o preset na memória do pedal, com o nome do campo (o mesmo comando do botão de salvar do app oficial)
+async function save() {
+  if (!pedalOnCurrent()) return
+  const target = current.value!.slot
+  if (!confirm(`Gravar no preset ${target} do pedal? O que estava salvo nele será substituído.`)) return
+  saving.value = true
+  const named = await request(s => renameMessage(name.value, s))
+  const reply = named?.status === 0 ? await request(s => saveMessage(target, s)) : named
+  saving.value = false
+  if (reply?.status === 0) saveMsg.value = `Salvo no preset ${target}, com o nome ${name.value}.`
+  else if (reply) saveError.value = `O pedal recusou (status ${reply.status}). Nada foi gravado.`
+  else saveError.value = 'O pedal não respondeu. Confira a conexão e tente de novo.'
 }
 
 function tweak(block: Block, index: number, value: number) {
@@ -226,9 +295,7 @@ const activeBlocks = computed(() => {
         </li>
         <li>Toque e ajuste abaixo; cada mudança vai na hora para o pedal.</li>
         <li>O nome já foi junto; mude abaixo se quiser.</li>
-        <li>
-          Gostou? Segure o botão <strong>MASTER</strong> do pedal para gravar no preset {{ current.slot }}, com o nome.
-        </li>
+        <li>Gostou? <strong>Salvar no pedal</strong> grava o preset {{ current.slot }}, com o nome.</li>
       </ol>
       <form class="name-row" @submit.prevent="rename">
         <label>
@@ -243,6 +310,11 @@ const activeBlocks = computed(() => {
         <button type="submit">Mudar nome</button>
         <span class="muted">Até {{ NAME_MAX }} caracteres, sem acento. Vale para o preset ativo no pedal.</span>
       </form>
+      <div class="name-row">
+        <button :disabled="saving" @click="save">{{ saving ? 'Salvando…' : 'Salvar no pedal' }}</button>
+        <span v-if="saveMsg" class="ok">{{ saveMsg }}</span>
+        <span v-if="saveError" class="error">{{ saveError }}</span>
+      </div>
       <div v-for="{ block, state, info } in activeBlocks" :key="block" class="block">
         <h3>{{ info.name }}</h3>
         <label v-for="(label, i) in info.params" :key="label" class="param">

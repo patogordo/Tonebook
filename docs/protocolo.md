@@ -47,8 +47,13 @@ O que se aprendeu usando:
   ficam por volta de 85).
 - **O pedal leva alguns milissegundos** para carregar um preset. CC enviado logo depois do Program Change pode ser
   sobrescrito; o site espera 150 ms.
-- **Nada é salvo pelo MIDI.** As mudanças valem até trocar de preset; segurar o botão MASTER salva (manual, "Preset Save
-  Operation").
+- **CC e Program Change não salvam nada.** As mudanças valem até trocar de preset. Para gravar, o site usa o comando de
+  salvar do app oficial (`0x46`, abaixo): testado, o preset voltou com o timbre e o nome depois de trocar e voltar.
+- **Trocar de preset descarta o que não foi salvo**, venha a troca do pedal, do Program Change ou do app (tocar num
+  preset na lista do ToneCommand recarrega o preset da memória).
+- No próprio pedal, salvar não é só segurar o MASTER: na tela principal, segurar o MASTER faz o número piscar; depois
+  é girar o SELECTOR até o preset, apertar, escolher REPLACE e apertar de novo (manual, "Preset Save Operation"). Não
+  foi testado se esse caminho grava o que veio pelo MIDI.
 
 ### Faixas que pegam de surpresa
 
@@ -93,6 +98,7 @@ O `seq` é um contador de quem pede; a resposta repete o `seq` e o comando.
 | `0x68` | Batimento: o app manda a cada 3 s | resposta `02 01 88 13` (0x1388 = 5000, provavelmente o prazo em ms) | observado |
 | `0x6d` sub `0x08` | **Renomeia o preset ativo** | `08 <tamanho> <ASCII>` | **usado pelo site**, testado no pedal |
 | `0x6d` sub `0x09` | Seleciona o preset | `09 <slot 0–63>` | testado no pedal |
+| `0x46` | **Salva o preset ativo na memória** | `<slot 0–63>` do preset ativo | **usado pelo site**, testado no pedal (é o botão de salvar do app) |
 | `0x6d` sub `0x00` | O app manda ao começar a editar | resposta `00 04 ff 03 08` | observado, sentido desconhecido |
 | `0x41` | Lê o registro de um preset | resposta `[slot][início u16][total u16][trecho]`, em trechos de até 200 bytes; o registro começa com `01 02 07 00 02 10` e o nome num campo de 16 bytes | observado; o formato do pedido não apareceu |
 | `0x63` | Retrato do preset ativo | resposta começa com `03 <slot> <volume>` e segue com floats | observado |
@@ -110,7 +116,8 @@ O pedal **só avisa o que muda**: trocar entre dois presets com o mesmo volume n
 
 ### Regra de segurança
 
-Só mande ao pedal um comando que o app oficial também manda, com dados no mesmo formato. O app também atualiza
+Só mande ao pedal um comando que o app oficial também manda, com dados no mesmo formato. O `0x46` só com o número do
+preset ativo, como o app faz: o que o pedal faz com outro número não se sabe. O app também atualiza
 firmware e grava arquivos na memória do pedal; um comando desconhecido pode apagar presets ou travar o aparelho. Para
 descobrir um comando novo:
 

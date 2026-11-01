@@ -49,10 +49,12 @@ arquivos de `shared/` (assim o Node roda os testes sem build).
 
 ## Invariantes (não quebre)
 
-- **O site nunca grava na memória do pedal.** Tudo é edição ao vivo; quem salva é a pessoa, segurando o MASTER. Nada
-  de comando de salvar, de sessão de escrita (`0x21` a `0x24`) ou de firmware.
+- **Gravar na memória do pedal só com clique em "Salvar no pedal"**, com confirmação, e só no preset ativo que recebeu
+  o timbre (`pedalOnCurrent`: o pedal avisa a troca de preset com `0x60`, e o site recusa se não for o mesmo). O
+  `0x46` nunca vai com outro número que não o do preset ativo. Nada de sessão de escrita (`0x21` a `0x24`) ou de
+  firmware.
 - **SysEx só com o que o app oficial manda**, com dados no mesmo formato e conferido no pedal (status 0 na resposta).
-  Hoje são dois: renomear (`0x6d 08`) e, nos testes, selecionar (`0x6d 09`). Comando novo segue o roteiro de
+  Hoje são três: renomear (`0x6d 08`), salvar (`0x46`) e, nos testes, selecionar (`0x6d 09`). Comando novo segue o roteiro de
   `docs/protocolo.md` e entra com a mensagem capturada num teste. Nunca teste comando desconhecido no pedal.
 - **Tudo que vem de fora passa pelo `parseSong`**: o JSON colado e o que está salvo no navegador. Campo novo no
   formato entra no validador, no `prompt-ia.md` e nos testes juntos.
@@ -64,6 +66,7 @@ arquivos de `shared/` (assim o Node roda os testes sem build).
 - **Tipo antes dos parâmetros** e 150 ms depois do Program Change antes dos CCs (o pedal sobrescreve o que chega
   enquanto carrega o preset).
 - **Nada de dado pessoal** em código, commits, exemplos ou testes.
+- **Teste no pedal só nos presets combinados com quem é dono do pedal**; os outros guardam os timbres da pessoa.
 
 ## Timbres
 

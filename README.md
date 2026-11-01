@@ -12,8 +12,9 @@ tocando. Gostou? Dá nome ao preset e salva no próprio pedal. Não achou a mús
 instruções do site, e ele confere, aplica e guarda.
 
 > Projeto independente, sem relação com a LIVTRA. LIVTRA, NanoCore e ToneCommand são marcas dos seus donos. O site
-> só manda ao pedal o que o guia oficial de MIDI documenta e, para o nome do preset, o mesmo comando que o app oficial
-> usa; nada é gravado na memória do pedal sem você segurar o botão MASTER. Use por sua conta.
+> só manda ao pedal o que o guia oficial de MIDI documenta e, para dar nome e salvar o preset, os mesmos comandos que o
+> app oficial usa. Nada é gravado na memória do pedal sem você clicar em **Salvar no pedal** e confirmar. Use por sua
+> conta.
 
 <p align="center">
   <img src="docs/screenshots/inicio.png" alt="Tela inicial do Tonebook, com o NanoCore conectado e a lista de músicas" width="720">
@@ -23,7 +24,7 @@ instruções do site, e ele confere, aplica e guarda.
 
 - **Timbres prontos** de músicas conhecidas, pensados para guitarra com humbuckers, com a dica de microfone e técnica.
 - **Ajuste ao vivo**: cada controle do site muda o pedal na hora.
-- **Nome do preset** antes de salvar.
+- **Nome do preset e salvar no pedal**, com confirmação e só no preset que recebeu o timbre.
 - **Música nova por IA**: copia instruções para Claude, ChatGPT ou outra IA, recebe um JSON, confere, aplica e salva
   no navegador.
 - **Gravar vídeo** da aba com a câmera no canto e o som do pedal, do microfone ou dos dois.
@@ -45,8 +46,9 @@ Gish) e At Doom's Gate (Doom, 1993).
 3. No pedal, escolha o amp e a caixa indicados: o MIDI do NanoCore não troca o modelo de amp nem a IR.
 4. Toque e ajuste nos controles.
 5. O nome vai junto com o timbre (até 8 caracteres, sem acento); para trocar, edite **Nome no pedal** e clique em
-   **Mudar nome**. Vale para o preset ativo.
-6. Para salvar, segure o botão **MASTER** do pedal. Trocar de preset antes disso descarta as mudanças.
+   **Mudar nome**.
+6. Gostou? **Salvar no pedal** grava o preset de destino, com o nome do campo, depois de confirmar. Trocar de preset
+   antes disso descarta as mudanças, e o site recusa salvar se o pedal estiver em outro preset.
 
 <p align="center">
   <img src="docs/screenshots/editor.png" alt="Editor ao vivo do Seven Nation Army: nome do preset e controles de cada efeito" width="480">
@@ -82,7 +84,8 @@ No computador (o navegador do celular não grava a tela):
 
 - Modelo de amp, IR da caixa, ordem da cadeia e volume do preset não passam por MIDI. Um preset vazio abre com volume
   100, mais alto que os de fábrica (por volta de 85).
-- O nome do preset vai pelo SysEx não documentado do app oficial; uma atualização de firmware pode mudar isso.
+- O nome do preset e o salvar vão pelo SysEx não documentado do app oficial; uma atualização de firmware pode mudar
+  isso (o site avisa quando o pedal não confirma).
 - Pitch e wahs do bloco de drive usam os mesmos controles da modulação.
 - A faixa do Pitch muda com o firmware (±12 ou ±24 semitons).
 
@@ -126,12 +129,13 @@ oficial não manda.
 
 **Tonebook** sets a preset on the **LIVTRA NanoCore** guitar multi-effects to the tone of a known song, straight from
 the browser over USB MIDI (Chrome, Edge or Brave, desktop or Android). It lets you tweak every parameter live, name
-the preset before saving it on the pedal, generate new song tones with any AI from a built-in prompt (the site
+and save the preset on the pedal, generate new song tones with any AI from a built-in prompt (the site
 validates, applies and stores the JSON locally) and record a video of the page with your camera and the pedal's
 sound.
 
 It is an unofficial, independent project. It only sends what the official MIDI guide documents, plus the official
-app's own SysEx command to rename the active preset; nothing is written to the pedal's memory unless you hold MASTER.
+app's own SysEx commands to rename and save the active preset; nothing is written to the pedal's memory unless you
+click **Salvar no pedal** and confirm.
 The interface and docs are in Portuguese; [`docs/protocolo.md`](docs/protocolo.md) documents the NanoCore's USB
 interfaces, MIDI map and the reverse-engineered SysEx framing (7-bit packing, request/response/notification layout,
 observed commands).
