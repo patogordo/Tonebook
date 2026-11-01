@@ -147,4 +147,40 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    title: 'Come As You Are',
+    artist: 'Nirvana',
+    parts: [
+      {
+        name: 'Riff',
+        hint: 'Microfone da ponte, afinação um tom abaixo como na gravação. Limpo com chorus fundo, o "aquático" do Small Clone.',
+        tone: {
+          amp: 'Fd65Dk',
+          cab: 'FdTR212',
+          blocks: {
+            amp: { on: true, params: [0.4, 0.45, 0.5, 0.65, 0.8] },
+            cab: { on: true, params: [0.5, 0.75, 0.8] },
+            mod: { on: true, type: 0, params: [0.35, 0.75, 0.8] },
+            reverb: { on: true, type: 0, params: [0.15, 0.08, 0.6, 0.1, 0.12, 1] },
+          },
+        },
+      },
+      {
+        name: 'Refrão e solo',
+        hint: 'Microfone da ponte. Distorção Boss DS num Fender Bassman, com o chorus mais leve por baixo.',
+        tone: {
+          amp: 'Fd59Bm',
+          cab: 'Fd59BM410',
+          blocks: {
+            fx1: { on: true, type: 0, params: [0.4] },
+            fx2: { on: true, type: 3, params: [0.6, 0.5, 0.7] },
+            amp: { on: true, params: [0.45, 0.5, 0.5, 0.6, 0.75] },
+            cab: { on: true, params: [0.55, 0.65, 0.8] },
+            mod: { on: true, type: 0, params: [0.35, 0.55, 0.8] },
+            reverb: { on: true, type: 0, params: [0.12, 0.07, 0.6, 0, 0.12, 1] },
+          },
+        },
+      },
+    ],
+  },
 ]
