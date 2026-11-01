@@ -22,7 +22,8 @@ export const SONGS: Song[] = [
         // O que as fontes repetem: Strat limpa num AC30, Dyna Comp apertado, phaser (Phase 90 / Small Stone) e delay
         // analógico (Memory Man). Nada de fuzz. O EQ tira o embolado do humbucker para chegar perto do single-coil.
         // Compressor (manual): limiar −60..0 dB, ratio 1,1..20:1, knee 0..24 dB, ataque 0..200 ms,
-        // release 0..1000 ms, ganho −24..+24 dB → −30 dB, ~8:1, 6 dB, 5 ms, 200 ms, +9 dB.
+        // release 0..1000 ms, ganho −24..+24 dB → −27 dB, ~8:1, 6 dB, 5 ms, 200 ms, +19 dB (com +9 dB o timbre
+        // ficava uns 10 dB abaixo dos outros presets, medido na saída do pedal).
         // Delay BBD: 1..2000 ms → ~360 ms (colcheia pontuada a ~125 bpm).
         name: 'Guitarra',
         hint: 'Chave no meio (os dois microfones), tone aberto. Compressão forte, phaser lento e eco analógico curto num AC30 limpo.',
@@ -30,8 +31,8 @@ export const SONGS: Song[] = [
           amp: 'VXAC30',
           cab: 'AC30212',
           blocks: {
-            fx1: { on: true, type: 3, params: [0.5, 0.365, 0.25, 0.025, 0.2, 0.69] },
-            amp: { on: true, params: [0.3, 0.3, 0.5, 0.65, 0.8] },
+            fx1: { on: true, type: 3, params: [0.55, 0.365, 0.25, 0.025, 0.2, 0.9] },
+            amp: { on: true, params: [0.3, 0.3, 0.5, 0.65, 0.95] },
             cab: { on: true, params: [0.6, 0.75, 0.8] },
             mod: { on: true, type: 1, params: [0.15, 0.35, 0.5, 0.8] },
             delay: { on: true, type: 0, params: [0.18, 0.3, 0.4, 0.22, 0.8] },
