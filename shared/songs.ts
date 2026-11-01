@@ -19,34 +19,24 @@ export const SONGS: Song[] = [
     artist: 'Tame Impala',
     parts: [
       {
-        name: 'Limpo',
-        hint: 'Microfone do braço. Compressão, phaser lento e um eco discreto.',
-        tone: {
-          amp: 'Fd65Dk',
-          cab: 'FdTR212',
-          blocks: {
-            fx1: { on: true, type: 3, params: [0.62, 0, 0.18, 0.07, 0.13, 0.62] },
-            amp: { on: true, params: [0.4, 0.28, 0.55, 0.82, 0.8] },
-            cab: { on: true, params: [0.65, 0.82, 0.8] },
-            mod: { on: true, type: 1, params: [0.1, 0.3, 0.5, 0.8] },
-            delay: { on: true, type: 1, params: [0.3, 0.2, 0.15, 1] },
-            reverb: { on: true, type: 1, params: [0.3, 0.22, 0.7, 0.28, 0.2, 1] },
-          },
-        },
-      },
-      {
-        name: 'Fuzz',
-        hint: 'Big Muff num AC30 quase limpo, phaser e gate para não chiar parado.',
+        // O que as fontes repetem: Strat limpa num AC30, Dyna Comp apertado, phaser (Phase 90 / Small Stone) e delay
+        // analógico (Memory Man). Nada de fuzz. O EQ tira o embolado do humbucker para chegar perto do single-coil.
+        // Compressor (manual): limiar −60..0 dB, ratio 1,1..20:1, knee 0..24 dB, ataque 0..200 ms,
+        // release 0..1000 ms, ganho −24..+24 dB → −30 dB, ~8:1, 6 dB, 5 ms, 200 ms, +9 dB.
+        // Delay BBD: 1..2000 ms → ~360 ms (colcheia pontuada a ~125 bpm).
+        name: 'Guitarra',
+        hint: 'Chave no meio (os dois microfones), tone aberto. Compressão forte, phaser lento e eco analógico curto num AC30 limpo.',
         tone: {
           amp: 'VXAC30',
           cab: 'AC30212',
           blocks: {
-            fx1: { on: true, type: 0, params: [0.45] },
-            fx2: { on: true, type: 4, params: [0.38, 0.55, 0.6] },
-            amp: { on: true, params: [0.3, 0.38, 0.62, 0.52, 0.8] },
-            cab: { on: true, params: [0.56, 0.65, 0.8] },
-            mod: { on: true, type: 1, params: [0.15, 0.3, 0.5, 0.8] },
-            reverb: { on: true, type: 1, params: [0.25, 0.2, 0.7, 0.25, 0.18, 1] },
+            fx1: { on: true, type: 3, params: [0.5, 0.365, 0.25, 0.025, 0.2, 0.69] },
+            amp: { on: true, params: [0.3, 0.3, 0.5, 0.65, 0.8] },
+            cab: { on: true, params: [0.6, 0.75, 0.8] },
+            mod: { on: true, type: 1, params: [0.15, 0.35, 0.5, 0.8] },
+            delay: { on: true, type: 0, params: [0.18, 0.3, 0.4, 0.22, 0.8] },
+            reverb: { on: true, type: 1, params: [0.25, 0.15, 0.6, 0.25, 0.15, 1] },
+            eq: { on: true, type: 1, params: [0.45, 0.4, 0.43, 0.5, 0.57, 0.6] },
           },
         },
       },

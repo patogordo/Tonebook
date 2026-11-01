@@ -1,10 +1,13 @@
 // node --test (Node 22.18+ roda TypeScript direto)
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { BLOCKS, blockInfo, toneMessages } from '../shared/nanocore.ts'
+import { BLOCKS, blockInfo, toneMessages, type Tone } from '../shared/nanocore.ts'
 import { SONGS } from '../shared/songs.ts'
 
-const fuzz = SONGS[0]!.parts[1]!.tone
+const fuzz: Tone = { amp: 'VXAC30', cab: 'AC30212', blocks: {
+  fx1: { on: true, type: 0, params: [0.45] },
+  fx2: { on: true, type: 4, params: [0.38, 0.55, 0.6] },
+} }
 
 test('troca para o preset pedido antes de tudo', () => {
   assert.deepEqual(toneMessages(fuzz, 64)[0], [0xc0, 63])
