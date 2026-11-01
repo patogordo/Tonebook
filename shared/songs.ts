@@ -108,4 +108,43 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    // Não há equipamento documentado da gravação: o ponto de partida segue o que se ouve (riff seco e médio na
+    // frente, solo com mais sustentação e ambiente).
+    title: 'Jane!',
+    artist: 'The Long Faces',
+    parts: [
+      {
+        name: 'Riff',
+        hint: 'Microfone da ponte. TS9 empurrando um Marshall com pouco ganho: seco, médio na frente, gate para cortar firme.',
+        tone: {
+          amp: 'MarDSL1',
+          cab: 'Mar412A',
+          blocks: {
+            fx1: { on: true, type: 0, params: [0.4] },
+            fx2: { on: true, type: 0, params: [0.35, 0.55, 0.7] },
+            amp: { on: true, params: [0.55, 0.45, 0.65, 0.6, 0.75] },
+            cab: { on: true, params: [0.6, 0.65, 0.8] },
+            reverb: { on: true, type: 0, params: [0.15, 0.08, 0.6, 0.05, 0.12, 1] },
+          },
+        },
+      },
+      {
+        name: 'Solo',
+        hint: 'Microfone da ponte. Klone no Marshall com mais ganho, delay curto e plate para sustentar.',
+        tone: {
+          amp: 'MarDSL2',
+          cab: 'Mar412A',
+          blocks: {
+            fx1: { on: true, type: 0, params: [0.35] },
+            fx2: { on: true, type: 1, params: [0.45, 0.6, 0.75] },
+            amp: { on: true, params: [0.65, 0.45, 0.65, 0.6, 0.8] },
+            cab: { on: true, params: [0.55, 0.7, 0.8] },
+            delay: { on: true, type: 1, params: [0.35, 0.3, 0.2, 1] },
+            reverb: { on: true, type: 1, params: [0.35, 0.15, 0.6, 0.25, 0.2, 1] },
+          },
+        },
+      },
+    ],
+  },
 ]
