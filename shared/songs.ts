@@ -87,4 +87,25 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    title: 'No Surprises',
+    artist: 'Radiohead',
+    parts: [
+      {
+        name: 'Arpejo',
+        hint: 'Microfone do braço com o tone da guitarra um pouco fechado. Fender limpo, compressão leve, chorus lento e plate.',
+        tone: {
+          amp: 'Fd65Dk',
+          cab: 'FdTR212',
+          blocks: {
+            fx1: { on: true, type: 3, params: [0.5, 0.15, 0.3, 0.1, 0.3, 0.6] },
+            amp: { on: true, params: [0.45, 0.35, 0.5, 0.75, 0.8] },
+            cab: { on: true, params: [0.55, 0.8, 0.8] },
+            mod: { on: true, type: 0, params: [0.2, 0.3, 0.8] },
+            reverb: { on: true, type: 1, params: [0.35, 0.15, 0.6, 0.3, 0.22, 1] },
+          },
+        },
+      },
+    ],
+  },
 ]
