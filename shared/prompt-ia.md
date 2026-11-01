@@ -1,6 +1,8 @@
 # Timbre de música para o LIVTRA NanoCore
 
 MÚSICA: <escreva aqui o nome da música e do artista>
+GUITARRA: Epiphone Les Paul Special II, dois humbuckers
+MODELOS CARREGADOS: <opcional: os amps e caixas do seu pedal; vazio vale qualquer um da lista>
 
 Você vai montar o timbre de guitarra da música acima para a pedaleira LIVTRA NanoCore e devolver **só um JSON**, sem
 texto antes ou depois, sem comentários e sem bloco de código. O JSON vai ser colado num site que confere tudo e
@@ -8,9 +10,9 @@ manda para o pedal; qualquer campo fora do formato faz o site recusar.
 
 ## Quem toca
 
-- Guitarra Epiphone Les Paul Special II, dois humbuckers. Se a gravação usa single-coil (Strat, Tele, Jazzmaster),
-  compense: menos graves no amp, corte de graves maior na caixa e, se precisar, o EQ de 6 bandas tirando 250 e 500 Hz
-  e somando um pouco em 2 e 4 kHz.
+- A guitarra da linha GUITARRA. Com humbucker e a gravação em single-coil (Strat, Tele, Jazzmaster), compense: menos
+  graves no amp, corte de graves maior na caixa e, se precisar, o EQ de 6 bandas tirando 250 e 500 Hz e somando um
+  pouco em 2 e 4 kHz. Com single-coil e a gravação em humbucker, o contrário.
 - Diga no `hint` qual microfone usar (braço, ponte ou chave no meio) e como tocar.
 
 ## Como pensar o timbre
@@ -59,42 +61,66 @@ manda para o pedal; qualquer campo fora do formato faz o site recusar.
 
 ## Amp e caixa
 
-Use só estes nomes, que são os carregados neste pedal.
+Use só estes nomes, que são os modelos de fábrica do NanoCore. Se a linha MODELOS CARREGADOS estiver preenchida,
+escolha só entre eles, porque o pedal pode não ter todos.
 
 Amps (`amp`):
 
-- `Fd65Dk`: Fender '65 Deluxe (Darkface), limpo
+- `BogXTC1`: Bogner Ecstasy (XTC), tom 1
+- `BogXTC2`: Bogner Ecstasy (XTC), tom 2
+- `ENGP1`: ENGL Powerball, tom 1
+- `ENGP2`: ENGL Powerball, tom 2
 - `Fd59Bm`: Fender '59 Bassman
-- `RoJC120`: Roland JC-120, limpo
-- `VXAC30`: Vox AC30
+- `Fd65Dk`: Fender '65 Darkface, limpo
+- `Hiw103`: Hiwatt DR103
 - `MarDSL1`: Marshall DSL50, tom 1
 - `MarDSL2`: Marshall DSL50, tom 2
 - `Mar8001`: Marshall JCM800, tom 1
 - `Mar8002`: Marshall JCM800, tom 2
-- `OgG120`: Orange Graphic 120
-- `BogXTC2`: Bogner Ecstasy, ganho alto
-- `ENGP2`: ENGL Powerball, ganho alto
 - `MesR1`: Mesa Rectifier, tom 1
 - `MesR2`: Mesa Rectifier, tom 2
 - `MesR3`: Mesa Rectifier, tom 3
+- `OgG120`: Orange Graphic 120
+- `Pey51501`: Peavey 5150, tom 1
+- `Pey51502`: Peavey 5150, tom 2
 - `Pey6505`: Peavey 6505
-- `ApSVTVR`, `ApSVTCL`, `Adn900`, `Hiw320`: amps de baixo, não use para guitarra
+- `RanT21`: Randall T2, tom 1
+- `RanT22`: Randall T2, tom 2
+- `RoJC120`: Roland JC-120, limpo
+- `SLO1001`: Soldano SLO-100, tom 1
+- `SLO1002`: Soldano SLO-100, tom 2
+- `SLO1003`: Soldano SLO-100, tom 3
+- `VXAC30`: Vox AC30
+- `ApSVTVR`, `ApSVTCL`, `Adn900`, `Hiw320`, `MarSup`: amps de baixo, não use para guitarra
 
 Caixas (`cab`):
 
+- `Bog412A`: Bogner 4x12, tom A
+- `Bog412B`: Bogner 4x12, tom B
+- `Eng412A`: ENGL 4x12 Vintage 30, tom A
+- `Eng412B`: ENGL 4x12 Vintage 30, tom B
 - `FdTR212`: Fender Twin Reverb 2x12
 - `Fd59BM410`: Fender '59 Bassman 4x10
+- `Hiw412`: Hiwatt 4x12
+- `Mar412A`: Marshall 4x12 V30, tom A
+- `Mar412B`: Marshall 4x12 V30, tom B
+- `Mar96412A`: Marshall 1960B 4x12, tom A
+- `Mar96412B`: Marshall 1960B 4x12, tom B
+- `Mes412A`: Mesa 4x12 V30, tom A
+- `Mes412B`: Mesa 4x12 V30, tom B
+- `Mes412C`: Mesa 4x12 V30, tom C
+- `Og412`: Orange 4x12 V30
+- `pey412A`: Peavey 5150 4x12, tom A
+- `pey412B`: Peavey 5150 4x12, tom B
+- `peyVk412`: Peavey Valveking 4x12
+- `Ran112A`: Randall 1x12, tom A
+- `Ran112B`: Randall 1x12, tom B
+- `Ran112C`: Randall 1x12, tom C
+- `SLO412A`: Soldano 4x12, tom A
+- `SLO412B`: Soldano 4x12, tom B
+- `SLO412C`: Soldano 4x12, tom C
 - `AC30212`: Vox AC30 2x12
-- `Mar412A`: Marshall 4x12
-- `Mar96412A`: Marshall 1960 4x12 A
-- `Mar96412B`: Marshall 1960 4x12 B
-- `Og412`: Orange 4x12
-- `Bog412A`: Bogner 4x12
-- `Eng412A`: ENGL 4x12 A
-- `Eng412B`: ENGL 4x12 B
-- `Mes412C`: Mesa 4x12
-- `pey412A`: Peavey 4x12
-- `SLO412C`: Soldano 4x12
+- `Mar412`: Marshall 4x12
 - `AP810`, `Ap410`, `Adn410`, `HiwB410`: caixas de baixo, não use para guitarra
 
 ## Parâmetros

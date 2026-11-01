@@ -80,7 +80,7 @@ async function start() {
     const blob = new Blob(chunks, { type: rec.mimeType })
     if (file.value) URL.revokeObjectURL(file.value.url)
     const stamp = new Date().toLocaleString('sv').replace(/[: ]/g, '-')
-    file.value = { url: URL.createObjectURL(blob), name: `nanocore-${stamp}.${blob.type.includes('mp4') ? 'mp4' : 'webm'}` }
+    file.value = { url: URL.createObjectURL(blob), name: `tonebook-${stamp}.${blob.type.includes('mp4') ? 'mp4' : 'webm'}` }
   }
   // parar pelo aviso de compartilhamento do navegador também encerra a gravação
   screen.getVideoTracks()[0]!.onended = () => rec.state === 'recording' && rec.stop()

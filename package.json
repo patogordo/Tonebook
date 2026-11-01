@@ -1,5 +1,10 @@
 {
-  "name": "nanocore-tones",
+  "name": "tonebook",
+  "description": "Timbres de músicas para a pedaleira LIVTRA NanoCore, enviados pelo navegador via USB MIDI",
+  "license": "MIT",
+  "repository": "github:patogordo/Tonebook",
+  "engines": { "node": ">=22.18" },
+  "packageManager": "pnpm@11.23.0",
   "private": true,
   "type": "module",
   "scripts": {

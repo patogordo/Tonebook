@@ -20,10 +20,11 @@ const slot = ref(64)
 const current = ref<{ song: Song, part: SongPart, tone: Tone, slot: number } | null>(null)
 const name = ref('')
 let output: MIDIOutput | undefined
+const { baseURL } = useRuntimeConfig().app // no GitHub Pages o site fica em /Tonebook/
 let seq = 1
 
 // Músicas coladas como JSON (de IA) ficam no navegador; o que estiver salvo passa de novo pelo validador ao abrir
-const STORE = 'nanocore-tones:songs'
+const STORE = 'tonebook:songs'
 const saved = ref<Song[]>(loadSaved())
 const allSongs = computed(() => [...SONGS, ...saved.value])
 const pasted = ref('')
@@ -131,9 +132,12 @@ const activeBlocks = computed(() => {
 
 <template>
   <main>
-    <header>
-      <h1>NanoCore Tones</h1>
-      <p class="muted">Timbres de músicas conhecidas para o LIVTRA NanoCore, enviados pelo USB MIDI.</p>
+    <header class="brand">
+      <img :src="`${baseURL}logo.svg`" alt="" width="48" height="48">
+      <div>
+        <h1>Tonebook</h1>
+        <p class="muted">Timbres de músicas para a pedaleira LIVTRA NanoCore, enviados pelo USB MIDI.</p>
+      </div>
     </header>
 
     <section class="card connect">
@@ -243,6 +247,8 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .part { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .steps { margin: 0 0 8px; padding-left: 20px; color: var(--muted); font-size: 0.9rem; }
 .steps strong { color: var(--text); }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { border-radius: 10px; flex: none; }
 .song-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 button.small { padding: 4px 10px; font-size: 0.85rem; }
 textarea { display: block; width: 100%; margin: 12px 0; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: 0.85rem/1.4 ui-monospace, monospace; }

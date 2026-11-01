@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tonebook">
+  <rect width="64" height="64" rx="14" fill="#f0a43a"/>
+  <path d="M31 19.5C25 15.5 16 14.8 9 16.8V47.2c7-1.8 16-1.2 22 2.8z" fill="#1a1205"/>
+  <path d="M33 19.5C39 15.5 48 14.8 55 16.8V47.2c-7-1.8-16-1.2-22 2.8z" fill="#1a1205"/>
+  <path d="M13 33c2.1-6 4.2-6 6.3 0s4.2 6 6.4 0 4.2-6 6.3 0 4.2 6 6.3 0 4.2-6 6.4 0 4.2 6 6.3 0" fill="none" stroke="#f0a43a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,76 +1,122 @@
-# NanoCore Tones
+<p align="center"><img src="public/logo.svg" alt="" width="96"></p>
 
-Site que leva um preset do LIVTRA NanoCore ao timbre de músicas conhecidas, pelo USB MIDI do próprio pedal.
-Por enquanto: **Let It Happen** (Tame Impala), **Creep** (Radiohead), estrofe e refrão, **No Surprises** (Radiohead), o arpejo limpo, **Jane!** (The Long Faces), riff e solo, **Come As You Are** (Nirvana), riff limpo e refrão com o solo, **Seven Nation Army** (The White Stripes), um timbre só: palm muting no riff e a mão solta no refrão, **Pluto Projector** (Rex Orange County) **Impostor Syndrome** (Sidney Gish) e **At Doom's Gate** (E1M1, do Doom de 1993).
+<h1 align="center">Tonebook</h1>
+
+<p align="center">Timbres de músicas para a pedaleira <strong>LIVTRA NanoCore</strong>, enviados pelo navegador via USB MIDI.<br>
+<a href="https://patogordo.github.io/Tonebook/">patogordo.github.io/Tonebook</a> · <a href="#english">English</a></p>
+
+---
+
+Você escolhe a música, o Tonebook leva um preset do pedal àquele timbre e deixa ajustar cada parâmetro ao vivo,
+tocando. Gostou? Dá nome ao preset e salva no próprio pedal. Não achou a música? Uma IA monta o timbre a partir das
+instruções do site, e ele confere, aplica e guarda.
+
+> Projeto independente, sem relação com a LIVTRA. LIVTRA, NanoCore e ToneCommand são marcas dos seus donos. O site
+> só manda ao pedal o que o guia oficial de MIDI documenta e, para o nome do preset, o mesmo comando que o app oficial
+> usa; nada é gravado na memória do pedal sem você segurar o botão MASTER. Use por sua conta.
+
+## O que faz
+
+- **Timbres prontos** de músicas conhecidas, pensados para guitarra com humbuckers, com a dica de microfone e técnica.
+- **Ajuste ao vivo**: cada controle do site muda o pedal na hora.
+- **Nome do preset** antes de salvar.
+- **Música nova por IA**: copia instruções para Claude, ChatGPT ou outra IA, recebe um JSON, confere, aplica e salva
+  no navegador.
+- **Gravar vídeo** da aba com a câmera no canto e o som do pedal, do microfone ou dos dois.
+
+Músicas incluídas: Let It Happen (Tame Impala), Creep e No Surprises (Radiohead), Jane! (The Long Faces), Come As You
+Are (Nirvana), Seven Nation Army (The White Stripes), Pluto Projector (Rex Orange County), Impostor Syndrome (Sidney
+Gish) e At Doom's Gate (Doom, 1993).
+
+## Do que precisa
+
+- Um LIVTRA NanoCore com firmware 1.04 ou mais novo, ligado por cabo USB (no Android, com adaptador OTG).
+- Chrome, Edge ou Brave, no computador ou no Android. Safari e iPhone não têm Web MIDI.
 
 ## Como usar
+
+1. Ligue o NanoCore no USB, abra o site e clique em **Conectar ao NanoCore**. Permita o acesso ao MIDI, inclusive
+   "controlar e reprogramar dispositivos MIDI": é por ele que vai o nome do preset.
+2. Escolha o preset de destino (padrão: 64) e clique em **Enviar** na parte da música.
+3. No pedal, escolha o amp e a caixa indicados: o MIDI do NanoCore não troca o modelo de amp nem a IR.
+4. Toque e ajuste nos controles.
+5. O nome vai junto com o timbre (até 8 caracteres, sem acento); para trocar, edite **Nome no pedal** e clique em
+   **Mudar nome**. Vale para o preset ativo.
+6. Para salvar, segure o botão **MASTER** do pedal. Trocar de preset antes disso descarta as mudanças.
+
+### Música nova por IA
+
+1. **Copiar instruções para a IA** copia o [`shared/prompt-ia.md`](shared/prompt-ia.md). Preencha as linhas `MÚSICA`,
+   `GUITARRA` e, se quiser, `MODELOS CARREGADOS`, e cole no Claude, no ChatGPT ou em outra IA. As instruções trazem
+   cada efeito com a ordem e a faixa real dos parâmetros, os modelos de amp e caixa e as regras de timbre de
+   [`docs/timbres.md`](docs/timbres.md).
+2. Cole a resposta no campo e clique em **Aplicar e salvar**. O site confere tipos, quantidade e faixa dos parâmetros
+   e nomes de amp e caixa, e explica o que estiver errado. Texto ou bloco de código em volta do JSON não atrapalham.
+3. A música vai para o preset de destino e fica salva no navegador, na lista, com **Remover**. Colar de novo uma
+   música com o mesmo título e artista substitui a anterior.
+
+### Gravar vídeo
+
+No computador (o navegador do celular não grava a tela):
+
+1. **Ligar câmera**: ela aparece no canto da página; **Tamanho** vai de 160 a 720 px.
+2. Marque o som: **Som do NanoCore (USB)**, **Microfone** ou os dois, que entram misturados e sem os filtros de voz do
+   navegador (que estragam a guitarra).
+3. **Gravar** e, quando o navegador perguntar, escolha **esta aba**.
+4. **Parar** e **Baixar vídeo** (MP4; WebM nos navegadores que não gravam MP4).
+
+## Limites
+
+- Modelo de amp, IR da caixa, ordem da cadeia e volume do preset não passam por MIDI. Um preset vazio abre com volume
+  100, mais alto que os de fábrica (por volta de 85).
+- O nome do preset vai pelo SysEx não documentado do app oficial; uma atualização de firmware pode mudar isso.
+- Pitch e wahs do bloco de drive usam os mesmos controles da modulação.
+- A faixa do Pitch muda com o firmware (±12 ou ±24 semitons).
+
+Detalhes em [`docs/protocolo.md`](docs/protocolo.md).
+
+## Desenvolvimento
 
 ```bash
 pnpm install
 pnpm dev          # http://localhost:3300
-```
-
-1. Ligue o NanoCore no USB e abra o site no Chrome, no Edge ou no Brave (computador ou Android). Safari e iPhone
-   não têm Web MIDI.
-2. **Conectar ao NanoCore** e permita o acesso ao MIDI quando o navegador pedir (inclusive "controlar e reprogramar
-   dispositivos MIDI": é por ele que vai o nome do preset).
-3. Escolha o preset de destino (padrão: 64) e clique em **Enviar** na parte da música.
-4. No pedal, escolha o amp e a caixa indicados. O MIDI do NanoCore não troca o modelo de amp nem a IR.
-5. Toque e ajuste nos controles: cada mudança vai na hora para o pedal.
-6. O nome do preset vai junto com o timbre (até 8 caracteres, sem acento). Para trocar, edite **Nome no pedal** e
-   clique em **Mudar nome**; vale para o preset ativo.
-7. Para gravar, segure o botão **MASTER** do pedal (o nome é salvo junto). O site nunca grava nada sozinho: trocar de preset antes de
-   salvar descarta as mudanças.
-
-## Música nova por IA
-
-1. **Copiar instruções para a IA** copia o `shared/prompt-ia.md`: troque a linha `MÚSICA:` pelo nome da música e do
-   artista e cole no Claude, no ChatGPT ou em outra IA. As instruções trazem os efeitos, a ordem e a faixa real de cada
-   parâmetro (do manual), os amps e caixas carregados neste pedal, a guitarra (Les Paul, humbuckers) e as regras de
-   timbre: um timbre só quando a diferença vem da mão, compressor que devolve o volume e assim por diante.
-2. Cole a resposta no campo e clique em **Aplicar e salvar**. O site confere tudo (tipos, quantidade e faixa dos
-   parâmetros, nomes de amp e caixa) e recusa com a explicação do erro; texto ou bloco de código em volta do JSON não
-   atrapalham.
-3. A música vai na hora para o preset de destino e fica salva neste navegador, junto das outras, com **Remover**.
-   Colar de novo uma música com o mesmo título e artista substitui a anterior.
-
-## Gravar vídeo
-
-No computador (Chrome, Edge ou Brave; celular não grava a tela pelo navegador):
-
-1. **Ligar câmera**: ela aparece no canto da página, e o controle **Tamanho** muda o tamanho dela (160 a 720 px).
-2. Marque o som: **Som do NanoCore (USB)**, **Microfone** ou os dois, que entram misturados. O som entra sem os
-   filtros de voz do navegador (cancelamento de eco, redução de ruído, ganho automático), que estragam a guitarra.
-3. **Gravar** e, quando o navegador perguntar o que compartilhar, escolha **esta aba**. O vídeo mostra a página com
-   as configurações e a câmera no canto.
-4. **Parar** e **Baixar vídeo** (MP4; WebM nos navegadores que não gravam MP4).
-
-Na primeira vez, o macOS pede permissão de câmera e microfone para o navegador.
-
-## Limites do MIDI do pedal
-
-- O nome não está no guia de MIDI: vai pelo SysEx do próprio ToneCommand (`F0 7D 4E 43 70 … F7`, comando `0x6d`,
-  subcomando `0x08`), descoberto pelas respostas do pedal enquanto o app renomeava um preset. Uma atualização de
-  firmware pode mudar isso; o pedal responde com status 0 quando aceita.
-- Modelo de amp, IR da caixa, ordem da cadeia e volume do preset não passam por MIDI. Um preset vazio (como o 64)
-  abre com volume 100, mais alto que os de fábrica (por volta de 85).
-- Pitch e wahs do bloco de drive usam os mesmos CCs da modulação: com um deles ligado, mexer na modulação mexe nele.
-
-## Código
-
-- `shared/nanocore.ts`: mapa de CCs do guia oficial de MIDI (firmware 1.04+) e a tradução de um timbre em mensagens.
-- `shared/songs.ts`: os timbres. Parâmetros de 0 a 1, na ordem do guia; tipos pelos IDs do guia (no reverb,
-  4 = Shimmer, 5 = Cloud, 6 = Spring, diferente da ordem do arquivo de preset do ToneCommand).
-- `shared/prompt-ia.md`: as instruções para a IA. O teste confere que elas listam todos os tipos, parâmetros, amps e
-  caixas do código e que o exemplo passa no validador.
-- `shared/import.ts`: o validador do JSON colado.
-- `app/app.vue`: a página.
-
-```bash
-pnpm test         # mapa de CCs e conferência dos timbres
+pnpm test         # mapa de MIDI, SysEx, validador, timbres e sincronia do prompt
 pnpm typecheck
 pnpm generate     # site estático em .output/public
 ```
 
-Música nova: acrescente em `shared/songs.ts` e rode `pnpm test`, que confere tipos, quantidade de parâmetros e faixa
-dos valores.
+O site é estático (Nuxt 4 como SPA) e vai para o GitHub Pages a cada push na `main`
+([`.github/workflows/pages.yml`](.github/workflows/pages.yml)).
+
+- [`docs/protocolo.md`](docs/protocolo.md): USB, MIDI oficial, o SysEx do app decifrado e o formato do backup.
+- [`docs/timbres.md`](docs/timbres.md): como os timbres são pensados e medidos na saída do pedal.
+- [`AGENTS.md`](AGENTS.md): estrutura do código, regras que não se quebram e convenções, para pessoas e agentes de
+  código.
+- [`tools/`](tools): sonda de MIDI (macOS) e decodificador do SysEx, para investigar o pedal.
+
+## Contribuindo
+
+Timbre novo, correção de timbre, música por IA que ficou boa, descoberta sobre o pedal: abra uma issue ou um pull
+request. Para timbre, diga de onde veio (fonte da gravação ou ouvido) e com que guitarra testou. Para o protocolo,
+siga a regra de segurança de [`docs/protocolo.md`](docs/protocolo.md): nada de mandar ao pedal comando que o app
+oficial não manda.
+
+## Licença
+
+[MIT](LICENSE).
+
+---
+
+## English
+
+**Tonebook** sets a preset on the **LIVTRA NanoCore** guitar multi-effects to the tone of a known song, straight from
+the browser over USB MIDI (Chrome, Edge or Brave, desktop or Android). It lets you tweak every parameter live, name
+the preset before saving it on the pedal, generate new song tones with any AI from a built-in prompt (the site
+validates, applies and stores the JSON locally) and record a video of the page with your camera and the pedal's
+sound.
+
+It is an unofficial, independent project. It only sends what the official MIDI guide documents, plus the official
+app's own SysEx command to rename the active preset; nothing is written to the pedal's memory unless you hold MASTER.
+The interface and docs are in Portuguese; [`docs/protocolo.md`](docs/protocolo.md) documents the NanoCore's USB
+interfaces, MIDI map and the reverse-engineered SysEx framing (7-bit packing, request/response/notification layout,
+observed commands).

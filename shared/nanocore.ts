@@ -18,22 +18,30 @@ export interface Tone {
 
 export const BLOCKS: Block[] = ['fx1', 'fx2', 'amp', 'cab', 'mod', 'delay', 'reverb', 'eq']
 
-// Modelos de amp e IRs carregados neste pedal (backup do ToneCommand de 2026-11-01). O MIDI não troca o modelo;
-// o site só diz qual escolher, e o JSON vindo de IA só pode usar estes nomes.
+// Modelos de amp e caixa de fábrica, na ordem do manual (V01). O MIDI não troca o modelo: o site só diz qual escolher
+// no pedal, e o JSON colado só pode usar estes nomes. Cada pedal pode ter só parte deles carregada (o app troca).
 export const AMPS: Record<string, string> = {
-  BogXTC2: 'Bogner Ecstasy, ganho alto', ENGP2: 'ENGL Powerball, ganho alto', Fd59Bm: "Fender '59 Bassman",
-  Fd65Dk: "Fender '65 Deluxe (Darkface), limpo", MarDSL1: 'Marshall DSL50, tom 1', MarDSL2: 'Marshall DSL50, tom 2',
-  Mar8001: 'Marshall JCM800, tom 1', Mar8002: 'Marshall JCM800, tom 2', MesR1: 'Mesa Rectifier, tom 1',
-  MesR2: 'Mesa Rectifier, tom 2', MesR3: 'Mesa Rectifier, tom 3', OgG120: 'Orange Graphic 120',
-  Pey6505: 'Peavey 6505', RoJC120: 'Roland JC-120, limpo', VXAC30: 'Vox AC30', ApSVTVR: 'Ampeg SVT VR (baixo)',
-  ApSVTCL: 'Ampeg SVT CL (baixo)', Adn900: 'Aguilar DB 900 (baixo)', Hiw320: 'Hiwatt 320 (baixo)',
+  BogXTC1: 'Bogner Ecstasy (XTC), tom 1', BogXTC2: 'Bogner Ecstasy (XTC), tom 2', ENGP1: 'ENGL Powerball, tom 1',
+  ENGP2: 'ENGL Powerball, tom 2', Fd59Bm: "Fender '59 Bassman", Fd65Dk: "Fender '65 Darkface, limpo", Hiw103: 'Hiwatt DR103',
+  MarDSL1: 'Marshall DSL50, tom 1', MarDSL2: 'Marshall DSL50, tom 2', Mar8001: 'Marshall JCM800, tom 1',
+  Mar8002: 'Marshall JCM800, tom 2', MesR1: 'Mesa Rectifier, tom 1', MesR2: 'Mesa Rectifier, tom 2',
+  MesR3: 'Mesa Rectifier, tom 3', OgG120: 'Orange Graphic 120', Pey51501: 'Peavey 5150, tom 1',
+  Pey51502: 'Peavey 5150, tom 2', Pey6505: 'Peavey 6505', RanT21: 'Randall T2, tom 1', RanT22: 'Randall T2, tom 2',
+  RoJC120: 'Roland JC-120, limpo', SLO1001: 'Soldano SLO-100, tom 1', SLO1002: 'Soldano SLO-100, tom 2',
+  SLO1003: 'Soldano SLO-100, tom 3', VXAC30: 'Vox AC30', ApSVTVR: 'Ampeg SVT VR (baixo)', ApSVTCL: 'Ampeg SVT-CL (baixo)',
+  Adn900: 'Ashdown ABM900 (baixo)', Hiw320: 'Hiwatt Jupiter 320 (baixo)', MarSup: 'Marshall Super Bass (baixo)',
 }
 export const CABS: Record<string, string> = {
-  Bog412A: 'Bogner 4x12', Eng412A: 'ENGL 4x12 A', Eng412B: 'ENGL 4x12 B', FdTR212: 'Fender Twin Reverb 2x12',
-  Fd59BM410: "Fender '59 Bassman 4x10", Mar412A: 'Marshall 4x12', Mar96412A: 'Marshall 1960 4x12 A',
-  Mar96412B: 'Marshall 1960 4x12 B', Mes412C: 'Mesa 4x12', Og412: 'Orange 4x12', pey412A: 'Peavey 4x12',
-  SLO412C: 'Soldano 4x12', AC30212: 'Vox AC30 2x12', AP810: 'Ampeg 8x10 (baixo)', Ap410: 'Ampeg 4x10 (baixo)',
-  Adn410: 'Aguilar 4x10 (baixo)', HiwB410: 'Hiwatt 4x10 (baixo)',
+  Bog412A: 'Bogner 4x12, tom A', Bog412B: 'Bogner 4x12, tom B', Eng412A: 'ENGL 4x12 Vintage 30, tom A',
+  Eng412B: 'ENGL 4x12 Vintage 30, tom B', FdTR212: 'Fender Twin Reverb 2x12', Fd59BM410: "Fender '59 Bassman 4x10",
+  Hiw412: 'Hiwatt 4x12', Mar412A: 'Marshall 4x12 V30, tom A', Mar412B: 'Marshall 4x12 V30, tom B',
+  Mar96412A: 'Marshall 1960B 4x12, tom A', Mar96412B: 'Marshall 1960B 4x12, tom B', Mes412A: 'Mesa 4x12 V30, tom A',
+  Mes412B: 'Mesa 4x12 V30, tom B', Mes412C: 'Mesa 4x12 V30, tom C', Og412: 'Orange 4x12 V30',
+  pey412A: 'Peavey 5150 4x12, tom A', pey412B: 'Peavey 5150 4x12, tom B', peyVk412: 'Peavey Valveking 4x12',
+  Ran112A: 'Randall 1x12, tom A', Ran112B: 'Randall 1x12, tom B', Ran112C: 'Randall 1x12, tom C',
+  SLO412A: 'Soldano 4x12, tom A', SLO412B: 'Soldano 4x12, tom B', SLO412C: 'Soldano 4x12, tom C',
+  AC30212: 'Vox AC30 2x12', AP810: 'Ampeg 8x10 (baixo)', Ap410: 'Ampeg SVT 4x10 (baixo)', Adn410: 'Ashdown 4x10 (baixo)',
+  HiwB410: 'Hiwatt 4x10 (baixo)', Mar412: 'Marshall 4x12',
 }
 
 const ON_CC: Record<Block, number> = { fx1: 20, fx2: 21, amp: 23, cab: 24, mod: 25, delay: 26, reverb: 27, eq: 28 }
