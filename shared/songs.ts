@@ -220,4 +220,28 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    title: 'Impostor Syndrome',
+    artist: 'Sidney Gish',
+    parts: [
+      {
+        // Sem equipamento documentado: gravação caseira, guitarra limpa, brilhante e seca. JC-120 pelo limpo sem
+        // cor; compressão leve para os acordes rápidos soarem por igual (−18 dB, 2,5:1, +5 dB) e EQ que clareia o
+        // humbucker.
+        name: 'Guitarra',
+        hint: 'Chave no meio ou microfone da ponte, tone aberto. Limpo, brilhante e seco, compressão leve para os acordes rápidos soarem por igual.',
+        tone: {
+          amp: 'RoJC120',
+          cab: 'FdTR212',
+          blocks: {
+            fx1: { on: true, type: 3, params: [0.7, 0.074, 0.25, 0.05, 0.15, 0.604] },
+            amp: { on: true, params: [0.4, 0.35, 0.55, 0.65, 0.9] },
+            cab: { on: true, params: [0.55, 0.8, 0.8] },
+            reverb: { on: true, type: 0, params: [0.15, 0.05, 0.6, 0.1, 0.1, 1] },
+            eq: { on: true, type: 1, params: [0.45, 0.42, 0.45, 0.5, 0.56, 0.58] },
+          },
+        },
+      },
+    ],
+  },
 ]
