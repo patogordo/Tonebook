@@ -197,4 +197,27 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    title: 'Pluto Projector',
+    artist: 'Rex Orange County',
+    parts: [
+      {
+        // Sem equipamento documentado: balada limpa e quente, guitarra seca na frente e ambiente de sala grande.
+        // Compressor leve com ganho que devolve o que tira (−20 dB, 3:1, +7 dB), para não ficar baixo como o
+        // primeiro Let It Happen.
+        name: 'Guitarra',
+        hint: 'Microfone do braço com o tone da guitarra em uns 6. Fender limpo e quente, compressão leve e reverb de sala grande.',
+        tone: {
+          amp: 'Fd65Dk',
+          cab: 'FdTR212',
+          blocks: {
+            fx1: { on: true, type: 3, params: [0.667, 0.1, 0.25, 0.075, 0.25, 0.646] },
+            amp: { on: true, params: [0.35, 0.5, 0.5, 0.55, 0.9] },
+            cab: { on: true, params: [0.45, 0.65, 0.8] },
+            reverb: { on: true, type: 2, params: [0.35, 0.15, 0.5, 0.3, 0.2, 1] },
+          },
+        },
+      },
+    ],
+  },
 ]
