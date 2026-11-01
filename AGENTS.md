@@ -49,12 +49,14 @@ arquivos de `shared/` (assim o Node roda os testes sem build).
 
 ## Invariantes (não quebre)
 
-- **Gravar na memória do pedal só com clique em "Salvar no pedal"**, com confirmação, e só no preset ativo que recebeu
-  o timbre (`pedalOnCurrent`: o pedal avisa a troca de preset com `0x60`, e o site recusa se não for o mesmo). O
-  `0x46` nunca vai com outro número que não o do preset ativo. Nada de sessão de escrita (`0x21` a `0x24`) ou de
-  firmware.
+- **Gravar na memória do pedal só com clique em "Salvar no pedal"**, com confirmação, e sempre pela sequência do
+  `save()` (`app/app.vue`): seleciona o preset de destino com `0x6d 09` e espera a confirmação, reenvia o timbre e o
+  nome, e só então manda o `0x46` com o mesmo preset. Nunca confie no estado do pedal nem nos avisos dele para
+  segurança: os avisos (`0x60` e outros) só chegam com o app oficial aberto. Nada de sessão de escrita (`0x21` a
+  `0x24`) ou de firmware.
 - **SysEx só com o que o app oficial manda**, com dados no mesmo formato e conferido no pedal (status 0 na resposta).
-  Hoje são três: renomear (`0x6d 08`), salvar (`0x46`) e, nos testes, selecionar (`0x6d 09`). Comando novo segue o roteiro de
+  Hoje são três: selecionar (`0x6d 09`), renomear (`0x6d 08`) e salvar (`0x46`). Pedido sem resposta pode ser
+  repetido quando repetir não tem efeito colateral (`confirmed()` tenta até 3 vezes). Comando novo segue o roteiro de
   `docs/protocolo.md` e entra com a mensagem capturada num teste. Nunca teste comando desconhecido no pedal.
 - **Tudo que vem de fora passa pelo `parseSong`**: o JSON colado e o que está salvo no navegador. Campo novo no
   formato entra no validador, no `prompt-ia.md` e nos testes juntos.

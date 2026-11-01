@@ -10,6 +10,7 @@ import {
   presetName,
   renameMessage,
   saveMessage,
+  selectMessage,
   toneMessages,
   unpack7,
   type Tone,
@@ -108,4 +109,8 @@ test('salvar manda o comando 0x46 com o preset, e o empacotamento ida e volta nÃ
   assert.deepEqual(unpack7(msg.slice(5, -1)), [0x02, 7, 0, 0x46, 0, 1, 0, 0x34])
   const bytes = Array.from({ length: 300 }, (_, i) => (i * 37) & 0xff)
   assert.deepEqual(unpack7(pack7(bytes)), bytes)
+})
+
+test('selecionar manda o comando 0x6d, subcomando 0x09, com o preset (como o app)', () => {
+  assert.deepEqual(unpack7(selectMessage(64, 9).slice(5, -1)), [0x02, 9, 0, 0x6d, 0, 2, 0, 0x09, 0x3f])
 })

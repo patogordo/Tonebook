@@ -98,7 +98,7 @@ O `seq` é um contador de quem pede; a resposta repete o `seq` e o comando.
 | `0x68` | Batimento: o app manda a cada 3 s | resposta `02 01 88 13` (0x1388 = 5000, provavelmente o prazo em ms) | observado |
 | `0x6d` sub `0x08` | **Renomeia o preset ativo** | `08 <tamanho> <ASCII>` | **usado pelo site**, testado no pedal |
 | `0x6d` sub `0x09` | Seleciona o preset | `09 <slot 0–63>` | testado no pedal |
-| `0x46` | **Salva o preset ativo na memória** | `<slot 0–63>` do preset ativo | **usado pelo site**, testado no pedal (é o botão de salvar do app) |
+| `0x46` | **Salva o preset ativo na memória** | `<slot 0–63>` do preset ativo | **usado pelo site**, testado no pedal (é o botão de salvar do app). Com o pedal em outro preset, a resposta também é status 0 e não se sabe o que ele grava |
 | `0x6d` sub `0x00` | O app manda ao começar a editar | resposta `00 04 ff 03 08` | observado, sentido desconhecido |
 | `0x41` | Lê o registro de um preset | resposta `[slot][início u16][total u16][trecho]`, em trechos de até 200 bytes; o registro começa com `01 02 07 00 02 10` e o nome num campo de 16 bytes | observado; o formato do pedido não apareceu |
 | `0x63` | Retrato do preset ativo | resposta começa com `03 <slot> <volume>` e segue com floats | observado |
@@ -112,7 +112,22 @@ O `seq` é um contador de quem pede; a resposta repete o `seq` e o comando.
 | `0x62` | parâmetro mudou: `<effectId> <índice> <float32>` (o `effectId` é o do arquivo de backup, abaixo) |
 | `0x69` | volume do preset: `<0–100>` |
 
-O pedal **só avisa o que muda**: trocar entre dois presets com o mesmo volume não gera `0x69`.
+O pedal **só avisa o que muda**: trocar entre dois presets com o mesmo volume não gera `0x69`. E **só avisa com o app
+oficial aberto** (mantendo o batimento `0x68`): com o ToneCommand fechado, trocar de preset no pedal ou pelo `0x6d 09`
+não gera `0x60`. Não use os avisos para segurança.
+
+Pedidos e respostas às vezes se perdem no USB (num teste, um `0x46` ficou sem resposta e o mesmo pedido, repetido,
+passou). Repita o pedido, com outro `seq`, quando repetir não tem efeito colateral.
+
+### Como o site salva
+
+1. Seleciona o preset de destino com `0x6d 09` e espera o status 0 (o Program Change não é confirmado).
+2. Espera 150 ms, manda de novo todos os CCs do timbre como está no site e o nome (`0x6d 08`, confirmado).
+3. Manda `0x46` com o mesmo preset e só diz "salvo" com o status 0.
+
+Assim não importa o que aconteceu no pedal desde o envio do timbre (a pessoa pode ter trocado de preset no pedal):
+grava o que está no site, no preset do campo. Cada passo é repetido até 3 vezes sem resposta; sem confirmação, o site
+para antes do `0x46`.
 
 ### Regra de segurança
 

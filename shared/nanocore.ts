@@ -195,8 +195,13 @@ export const presetName = (text: string) =>
     .slice(0, NAME_MAX)
 
 // Renomeia o preset ativo (comando 0x6d, subcomando 0x08, como o app faz). Vale até trocar de preset; saveMessage grava.
+// Seleciona o preset (comando 0x6d, subcomando 0x09, como o app faz). Diferente do Program Change, o pedal responde.
+export function selectMessage(slot: number, seq: number): number[] {
+  return sysex(seq, 0x6d, [0x09, slot - 1])
+}
+
 // Grava o preset ativo na memória do pedal (comando 0x46 com o número do preset, como o botão de salvar do app).
-// Só com o preset ativo: o app nunca mandou outro número, e não se sabe o que o pedal faz nesse caso.
+// Só com o preset ativo, confirmado logo antes por selectMessage: com outro número, não se sabe o que o pedal faz.
 export function saveMessage(slot: number, seq: number): number[] {
   return sysex(seq, 0x46, [slot - 1])
 }

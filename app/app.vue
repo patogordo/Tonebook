@@ -5,7 +5,6 @@
 import {
   BLOCKS,
   NAME_MAX,
-  NOTICE_ACTIVE_PRESET,
   blockInfo,
   cc,
   paramCC,
@@ -13,6 +12,7 @@ import {
   presetName,
   renameMessage,
   saveMessage,
+  selectMessage,
   toneMessages,
   type Block,
   type PedalMessage,
@@ -38,8 +38,6 @@ const name = ref('')
 let output: MIDIOutput | undefined
 const { baseURL } = useRuntimeConfig().app // no GitHub Pages o site fica em /Tonebook/
 
-// Preset ativo no pedal: o site sabe quando manda a troca, e o pedal avisa quando a pessoa troca nele
-const activeSlot = ref<number | null>(null)
 const saving = ref(false)
 const saveMsg = ref('')
 const saveError = ref('')
@@ -56,7 +54,6 @@ const waiting = new Map<number, (reply: PedalMessage) => void>()
 function onPedalMessage(event: MIDIMessageEvent) {
   const message = event.data && parseSysex(event.data)
   if (!message) return
-  if (message.kind === 'notice' && message.command === NOTICE_ACTIVE_PRESET) activeSlot.value = message.data[0]! + 1
   if (message.kind === 'response') waiting.get(message.seq)?.(message)
 }
 
@@ -163,7 +160,6 @@ function apply(song: Song, part: SongPart) {
   if (!output) return
   const tone = structuredClone(toRaw(part.tone)) // as salvas chegam como proxy reativo, que não clona
   current.value = { song, part, tone, slot: slot.value }
-  activeSlot.value = slot.value
   saveMsg.value = saveError.value = ''
 
   // nome sugerido: título (e parte, se houver mais de uma) só com letras e números, até 8 caracteres
@@ -177,31 +173,43 @@ function apply(song: Song, part: SongPart) {
   rest.forEach((message, i) => output!.send(message, start + 150 + i * 4))
 }
 
-// Nome e gravação valem para o preset ativo; se a pessoa trocou de preset no pedal, não mexe em outro
-function pedalOnCurrent(): boolean {
-  saveMsg.value = saveError.value = ''
-  const target = current.value!.slot
-  if (activeSlot.value === target) return true
-  saveError.value = `O pedal está no preset ${activeSlot.value ?? '?'}, não no ${target}. Envie o timbre de novo.`
-  return false
+// Pede e exige a confirmação do pedal. Às vezes um pedido ou a resposta se perde no USB; como cada passo pode ser
+// repetido sem efeito colateral (selecionar o mesmo preset, renomear, salvar o mesmo conteúdo), tenta até 3 vezes.
+// Sem confirmação, para tudo antes de gravar.
+async function confirmed(build: (seq: number) => number[], step: string) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const reply = await request(build)
+    if (!reply) continue
+    if (reply.status !== 0) throw new Error(`O pedal recusou ${step} (status ${reply.status}). Nada foi gravado.`)
+    return
+  }
+  throw new Error(`O pedal não respondeu ao ${step}. Nada foi gravado; confira o cabo e a permissão de MIDI.`)
 }
 
-function rename() {
-  if (pedalOnCurrent()) output?.send(renameMessage(name.value, nextSeq()))
-}
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-// Grava o preset na memória do pedal, com o nome do campo (o mesmo comando do botão de salvar do app oficial)
+// Grava o que está no site no preset de destino. Não confia no estado do pedal (a pessoa pode ter trocado de preset
+// nele, e o pedal só avisa trocas com o app oficial aberto): seleciona o preset com confirmação, manda o timbre e o
+// nome de novo e só então salva, com o mesmo comando do botão de salvar do app.
 async function save() {
-  if (!pedalOnCurrent()) return
-  const target = current.value!.slot
+  const { slot: target, tone } = current.value!
   if (!confirm(`Gravar no preset ${target} do pedal? O que estava salvo nele será substituído.`)) return
   saving.value = true
-  const named = await request(s => renameMessage(name.value, s))
-  const reply = named?.status === 0 ? await request(s => saveMessage(target, s)) : named
-  saving.value = false
-  if (reply?.status === 0) saveMsg.value = `Salvo no preset ${target}, com o nome ${name.value}.`
-  else if (reply) saveError.value = `O pedal recusou (status ${reply.status}). Nada foi gravado.`
-  else saveError.value = 'O pedal não respondeu. Confira a conexão e tente de novo.'
+  saveMsg.value = saveError.value = ''
+  try {
+    await confirmed(s => selectMessage(target, s), 'pedido de troca de preset')
+    await wait(150) // o pedal sobrescreve o que chega enquanto carrega o preset
+    const [, ...controls] = toneMessages(tone, target) // sem a troca de preset, já feita acima
+    controls.forEach(message => output!.send(message))
+    await confirmed(s => renameMessage(name.value, s), 'nome')
+    await wait(100)
+    await confirmed(s => saveMessage(target, s), 'pedido de salvar')
+    saveMsg.value = `Salvo no preset ${target}, com o nome ${name.value}.`
+  } catch (e) {
+    saveError.value = (e as Error).message
+  } finally {
+    saving.value = false
+  }
 }
 
 function tweak(block: Block, index: number, value: number) {
@@ -294,10 +302,12 @@ const activeBlocks = computed(() => {
           <strong>{{ current.tone.cab }}</strong> (modelo de amp e IR não passam por MIDI).
         </li>
         <li>Toque e ajuste abaixo; cada mudança vai na hora para o pedal.</li>
-        <li>O nome já foi junto; mude abaixo se quiser.</li>
-        <li>Gostou? <strong>Salvar no pedal</strong> grava o preset {{ current.slot }}, com o nome.</li>
+        <li>
+          Gostou? <strong>Salvar no pedal</strong> grava no preset {{ current.slot }} o timbre como está aqui, com o
+          nome abaixo.
+        </li>
       </ol>
-      <form class="name-row" @submit.prevent="rename">
+      <form class="name-row" @submit.prevent="save">
         <label>
           Nome no pedal
           <input
@@ -307,14 +317,11 @@ const activeBlocks = computed(() => {
             @input="name = presetName(($event.target as HTMLInputElement).value)"
           />
         </label>
-        <button type="submit">Mudar nome</button>
-        <span class="muted">Até {{ NAME_MAX }} caracteres, sem acento. Vale para o preset ativo no pedal.</span>
+        <button type="submit" :disabled="saving">{{ saving ? 'Salvando…' : 'Salvar no pedal' }}</button>
+        <span class="muted">Até {{ NAME_MAX }} caracteres, sem acento.</span>
       </form>
-      <div class="name-row">
-        <button :disabled="saving" @click="save">{{ saving ? 'Salvando…' : 'Salvar no pedal' }}</button>
-        <span v-if="saveMsg" class="ok">{{ saveMsg }}</span>
-        <span v-if="saveError" class="error">{{ saveError }}</span>
-      </div>
+      <p v-if="saveMsg" class="ok">{{ saveMsg }}</p>
+      <p v-if="saveError" class="error">{{ saveError }}</p>
       <div v-for="{ block, state, info } in activeBlocks" :key="block" class="block">
         <h3>{{ info.name }}</h3>
         <label v-for="(label, i) in info.params" :key="label" class="param">

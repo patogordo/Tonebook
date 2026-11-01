@@ -45,10 +45,10 @@ Gish) e At Doom's Gate (Doom, 1993).
 2. Escolha o preset de destino (padrão: 64) e clique em **Enviar** na parte da música.
 3. No pedal, escolha o amp e a caixa indicados: o MIDI do NanoCore não troca o modelo de amp nem a IR.
 4. Toque e ajuste nos controles.
-5. O nome vai junto com o timbre (até 8 caracteres, sem acento); para trocar, edite **Nome no pedal** e clique em
-   **Mudar nome**.
-6. Gostou? **Salvar no pedal** grava o preset de destino, com o nome do campo, depois de confirmar. Trocar de preset
-   antes disso descarta as mudanças, e o site recusa salvar se o pedal estiver em outro preset.
+5. Dê um nome em **Nome no pedal** (até 8 caracteres, sem acento).
+6. Gostou? **Salvar no pedal** grava no preset de destino o timbre como está no site, com o nome, depois de
+   confirmar. Antes de salvar, o site seleciona de novo o preset e reenvia tudo, então não importa se você trocou de
+   preset no pedal no meio do caminho; ele só diz "salvo" quando o pedal confirma.
 
 <p align="center">
   <img src="docs/screenshots/editor.png" alt="Editor ao vivo do Seven Nation Army: nome do preset e controles de cada efeito" width="480">
