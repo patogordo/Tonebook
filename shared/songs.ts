@@ -244,4 +244,28 @@ export const SONGS: Song[] = [
       },
     ],
   },
+  {
+    title: "At Doom's Gate (E1M1)",
+    artist: 'Bobby Prince · Doom (1993)',
+    parts: [
+      {
+        // Metal dos anos 90 tocado com palm muting: TS9 com ganho baixo e volume alto aperta o grave de um
+        // Rectifier (a receita clássica), corte de graves na caixa para o abafado não embolar e gate alto
+        // (−50 dB, faixa −100..0) para as pausas cortarem seco
+        name: 'Riff',
+        hint: 'Microfone da ponte. Riff em mi com palm muting; solte a mão nos acentos e o gate corta seco nas pausas.',
+        tone: {
+          amp: 'MesR2',
+          cab: 'Mes412C',
+          blocks: {
+            fx1: { on: true, type: 0, params: [0.5] },
+            fx2: { on: true, type: 0, params: [0.1, 0.6, 0.85] },
+            amp: { on: true, params: [0.6, 0.45, 0.45, 0.6, 0.75] },
+            cab: { on: true, params: [0.6, 0.7, 0.8] },
+            reverb: { on: true, type: 0, params: [0.1, 0.05, 0.6, 0, 0.08, 1] },
+          },
+        },
+      },
+    ],
+  },
 ]
