@@ -10,12 +10,20 @@ const prompt = readFileSync(new URL('../shared/prompt-ia.md', import.meta.url), 
 const example = prompt.split('```json')[1]!.split('```')[0]!
 
 test('o exemplo do prompt passa no validador e é o Seven Nation Army do site', () => {
-  assert.deepEqual(parseSong(example), SONGS.find(s => s.title === 'Seven Nation Army'))
+  assert.deepEqual(
+    parseSong(example),
+    SONGS.find(s => s.title === 'Seven Nation Army'),
+  )
 })
 
 test('o prompt lista todos os tipos, parâmetros, amps e caixas do código', () => {
   for (const [block, types] of Object.entries(TYPES)) {
-    types.forEach((t, i) => assert.ok(prompt.includes(`| ${i} | ${t.name} | ${t.params.join(', ') || 'nenhum'} |`), `${block} ${i} ${t.name}`))
+    types.forEach((t, i) =>
+      assert.ok(
+        prompt.includes(`| ${i} | ${t.name} | ${t.params.join(', ') || 'nenhum'} |`),
+        `${block} ${i} ${t.name}`,
+      ),
+    )
   }
   for (const block of ['amp', 'cab'] as Block[]) {
     assert.ok(prompt.includes(`| ${block} | ${blockInfo(block, { on: true }).params.join(', ')} |`), block)

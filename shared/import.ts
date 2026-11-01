@@ -24,7 +24,9 @@ function block(name: Block, v: unknown, where: string): BlockState {
   const expected = blockInfo(name, { on: true, type }).params
   const params = v.params ?? []
   if (!Array.isArray(params) || params.length !== expected.length) {
-    throw new Error(`${where}: "${name}" precisa de ${expected.length} parâmetros (${expected.join(', ') || 'nenhum'}).`)
+    throw new Error(
+      `${where}: "${name}" precisa de ${expected.length} parâmetros (${expected.join(', ') || 'nenhum'}).`,
+    )
   }
   if (!params.every(p => typeof p === 'number' && p >= 0 && p <= 1)) {
     throw new Error(`${where}: os parâmetros de "${name}" vão de 0 a 1.`)
@@ -35,9 +37,11 @@ function block(name: Block, v: unknown, where: string): BlockState {
 function part(v: unknown, index: number): SongPart {
   const where = `Parte ${index + 1}`
   if (!isObject(v) || !isObject(v.tone) || !isObject(v.tone.blocks)) throw new Error(`${where}: falta "tone.blocks".`)
-  const { amp, cab, blocks } = v.tone as { amp: unknown, cab: unknown, blocks: Record<string, unknown> }
-  if (typeof amp !== 'string' || !(amp in AMPS)) throw new Error(`${where}: amp "${amp}" não existe no pedal. Use um de: ${Object.keys(AMPS).join(', ')}.`)
-  if (typeof cab !== 'string' || !(cab in CABS)) throw new Error(`${where}: caixa "${cab}" não existe no pedal. Use uma de: ${Object.keys(CABS).join(', ')}.`)
+  const { amp, cab, blocks } = v.tone as { amp: unknown; cab: unknown; blocks: Record<string, unknown> }
+  if (typeof amp !== 'string' || !(amp in AMPS))
+    throw new Error(`${where}: amp "${amp}" não existe no pedal. Use um de: ${Object.keys(AMPS).join(', ')}.`)
+  if (typeof cab !== 'string' || !(cab in CABS))
+    throw new Error(`${where}: caixa "${cab}" não existe no pedal. Use uma de: ${Object.keys(CABS).join(', ')}.`)
   const unknown = Object.keys(blocks).filter(k => !BLOCKS.includes(k as Block))
   if (unknown.length) throw new Error(`${where}: bloco desconhecido: ${unknown.join(', ')}.`)
   const tone = { amp, cab, blocks: {} as Partial<Record<Block, BlockState>> }

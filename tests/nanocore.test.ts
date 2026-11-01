@@ -4,10 +4,14 @@ import { test } from 'node:test'
 import { BLOCKS, blockInfo, pack7, presetName, renameMessage, toneMessages, type Tone } from '../shared/nanocore.ts'
 import { SONGS } from '../shared/songs.ts'
 
-const fuzz: Tone = { amp: 'VXAC30', cab: 'AC30212', blocks: {
-  fx1: { on: true, type: 0, params: [0.45] },
-  fx2: { on: true, type: 4, params: [0.38, 0.55, 0.6] },
-} }
+const fuzz: Tone = {
+  amp: 'VXAC30',
+  cab: 'AC30212',
+  blocks: {
+    fx1: { on: true, type: 0, params: [0.45] },
+    fx2: { on: true, type: 4, params: [0.38, 0.55, 0.6] },
+  },
+}
 
 test('troca para o preset pedido antes de tudo', () => {
   assert.deepEqual(toneMessages(fuzz, 64)[0], [0xc0, 63])
@@ -23,25 +27,34 @@ test('tipo vem antes dos parâmetros, e os CCs batem com o guia', () => {
 })
 
 test('compressor, pitch e EQ de 8 bandas usam os CCs próprios', () => {
-  const msgs = toneMessages({ amp: '', cab: '', blocks: {
-    fx1: { on: true, type: 3, params: [1] },
-    fx2: { on: true, type: 8, params: [0, 0.5, 1] },
-    eq: { on: true, type: 2, params: [0, 0, 0, 0, 0, 0, 0, 1] },
-  } }, 1).map(m => m.join(','))
+  const msgs = toneMessages(
+    {
+      amp: '',
+      cab: '',
+      blocks: {
+        fx1: { on: true, type: 3, params: [1] },
+        fx2: { on: true, type: 8, params: [0, 0.5, 1] },
+        eq: { on: true, type: 2, params: [0, 0, 0, 0, 0, 0, 0, 1] },
+      },
+    },
+    1,
+  ).map(m => m.join(','))
   assert.ok(msgs.includes('176,51,127'))
   assert.ok(msgs.includes('176,70,127')) // mix do pitch vai nos CCs da modulação
   assert.ok(msgs.includes('176,33,127'))
 })
 
 test('todo timbre tem tipos e parâmetros que existem e valores entre 0 e 1', () => {
-  for (const song of SONGS) for (const part of song.parts) for (const block of BLOCKS) {
-    const state = part.tone.blocks[block]
-    if (!state) continue
-    const info = blockInfo(block, state)
-    assert.notEqual(info.name, '?', `${song.title} ${part.name} ${block}`)
-    assert.equal(state.params?.length ?? 0, info.params.length, `${song.title} ${part.name} ${block}`)
-    assert.ok(state.params?.every(v => v >= 0 && v <= 1) ?? true)
-  }
+  for (const song of SONGS)
+    for (const part of song.parts)
+      for (const block of BLOCKS) {
+        const state = part.tone.blocks[block]
+        if (!state) continue
+        const info = blockInfo(block, state)
+        assert.notEqual(info.name, '?', `${song.title} ${part.name} ${block}`)
+        assert.equal(state.params?.length ?? 0, info.params.length, `${song.title} ${part.name} ${block}`)
+        assert.ok(state.params?.every(v => v >= 0 && v <= 1) ?? true)
+      }
 })
 
 test('empacota em 7 bits igual ao pedal (resposta de batimento capturada do NanoCore)', () => {
@@ -55,6 +68,9 @@ test('renomear manda o comando 0x6d, subcomando 0x08, com o nome limpo', () => {
   assert.deepEqual(msg.slice(0, 5), [0xf0, 0x7d, 0x4e, 0x43, 0x70])
   assert.equal(msg.at(-1), 0xf7)
   // [02][seq 1][0x6d][tamanho 7][08 05 "Acao!"], em grupos de 7
-  assert.deepEqual(msg.slice(5, -1), pack7([0x02, 1, 0, 0x6d, 0, 7, 0, 0x08, 5, ...[...'Acao!'].map(c => c.charCodeAt(0))]))
+  assert.deepEqual(
+    msg.slice(5, -1),
+    pack7([0x02, 1, 0, 0x6d, 0, 7, 0, 0x08, 5, ...[...'Acao!'].map(c => c.charCodeAt(0))]),
+  )
   assert.equal(presetName('Seven Nation Army'), 'Seven Na')
 })

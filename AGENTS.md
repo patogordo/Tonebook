@@ -20,12 +20,13 @@ pnpm install
 pnpm dev                 # http://localhost:3300
 pnpm test                # node --test tests/*.test.ts
 pnpm typecheck           # vue-tsc
+pnpm format              # Prettier (o CI roda pnpm format:check; Markdown fica de fora)
 pnpm generate            # site estático em .output/public
 NUXT_APP_BASE_URL=/Tonebook/ pnpm generate   # como o GitHub Pages publica (.github/workflows/pages.yml)
 swiftc -O tools/midi.swift -o tools/midi     # sonda de MIDI (macOS), veja docs/protocolo.md
 ```
 
-Antes de entregar: `pnpm typecheck`, `pnpm test` e, se mexeu no que vai para o pedal, um teste com o pedal ligado
+Antes de entregar: `pnpm format`, `pnpm typecheck`, `pnpm test` e, se mexeu no que vai para o pedal, um teste com o pedal ligado
 (abaixo).
 
 ## Onde fica cada coisa
@@ -40,7 +41,7 @@ Antes de entregar: `pnpm typecheck`, `pnpm test` e, se mexeu no que vai para o p
 | `app/components/RecorderCard.vue` | Gravação de vídeo (aba, câmera, som do pedal e microfone) |
 | `tests/` | Mapa de CCs, empacotamento do SysEx contra uma mensagem real do pedal, validador e sincronia do prompt |
 | `tools/midi.swift`, `tools/decode.py` | Sonda de MIDI e decodificador do SysEx, para investigar o pedal |
-| `docs/` | Protocolo e timbres |
+| `docs/` | Protocolo do pedal, timbres, como rodar local, deploy e as capturas de tela do README |
 | `public/` | Logo e ícones |
 
 O que está em `shared/` é importado com `#shared/...` no app e com o caminho relativo e a extensão `.ts` entre os

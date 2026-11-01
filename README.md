@@ -15,6 +15,10 @@ instruções do site, e ele confere, aplica e guarda.
 > só manda ao pedal o que o guia oficial de MIDI documenta e, para o nome do preset, o mesmo comando que o app oficial
 > usa; nada é gravado na memória do pedal sem você segurar o botão MASTER. Use por sua conta.
 
+<p align="center">
+  <img src="docs/screenshots/inicio.png" alt="Tela inicial do Tonebook, com o NanoCore conectado e a lista de músicas" width="720">
+</p>
+
 ## O que faz
 
 - **Timbres prontos** de músicas conhecidas, pensados para guitarra com humbuckers, com a dica de microfone e técnica.
@@ -44,6 +48,11 @@ Gish) e At Doom's Gate (Doom, 1993).
    **Mudar nome**. Vale para o preset ativo.
 6. Para salvar, segure o botão **MASTER** do pedal. Trocar de preset antes disso descarta as mudanças.
 
+<p align="center">
+  <img src="docs/screenshots/editor.png" alt="Editor ao vivo do Seven Nation Army: nome do preset e controles de cada efeito" width="480">
+  <img src="docs/screenshots/celular.png" alt="Tonebook no celular" width="220">
+</p>
+
 ### Música nova por IA
 
 1. **Copiar instruções para a IA** copia o [`shared/prompt-ia.md`](shared/prompt-ia.md). Preencha as linhas `MÚSICA`,
@@ -54,6 +63,10 @@ Gish) e At Doom's Gate (Doom, 1993).
    e nomes de amp e caixa, e explica o que estiver errado. Texto ou bloco de código em volta do JSON não atrapalham.
 3. A música vai para o preset de destino e fica salva no navegador, na lista, com **Remover**. Colar de novo uma
    música com o mesmo título e artista substitui a anterior.
+
+<p align="center">
+  <img src="docs/screenshots/ia.png" alt="Cartão de música nova por IA, com um JSON colado" width="560">
+</p>
 
 ### Gravar vídeo
 
@@ -78,15 +91,17 @@ Detalhes em [`docs/protocolo.md`](docs/protocolo.md).
 ## Desenvolvimento
 
 ```bash
+git clone https://github.com/patogordo/Tonebook.git
+cd Tonebook
+corepack enable
 pnpm install
 pnpm dev          # http://localhost:3300
-pnpm test         # mapa de MIDI, SysEx, validador, timbres e sincronia do prompt
-pnpm typecheck
-pnpm generate     # site estático em .output/public
 ```
 
-O site é estático (Nuxt 4 como SPA) e vai para o GitHub Pages a cada push na `main`
-([`.github/workflows/pages.yml`](.github/workflows/pages.yml)).
+O site é estático (Nuxt 4 como SPA), sem servidor nem segredo, e vai para o GitHub Pages a cada push na `main`.
+
+- [`docs/rodar-local.md`](docs/rodar-local.md): requisitos, testes, formatação e como ver o build de produção.
+- [`docs/deploy.md`](docs/deploy.md): GitHub Pages, outras hospedagens estáticas e servidor próprio.
 
 - [`docs/protocolo.md`](docs/protocolo.md): USB, MIDI oficial, o SysEx do app decifrado e o formato do backup.
 - [`docs/timbres.md`](docs/timbres.md): como os timbres são pensados e medidos na saída do pedal.

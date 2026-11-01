@@ -3,7 +3,9 @@
   "description": "Timbres de músicas para a pedaleira LIVTRA NanoCore, enviados pelo navegador via USB MIDI",
   "license": "MIT",
   "repository": "github:patogordo/Tonebook",
-  "engines": { "node": ">=22.18" },
+  "engines": {
+    "node": ">=22.18"
+  },
   "packageManager": "pnpm@11.23.0",
   "private": true,
   "type": "module",
@@ -14,7 +16,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
-    "test": "node --test tests/*.test.ts"
+    "test": "node --test tests/*.test.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "nuxt": "4.6.3",
@@ -22,6 +26,7 @@
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "prettier": "^3.9.10",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.3.14"
   }

@@ -21,27 +21,68 @@ export const BLOCKS: Block[] = ['fx1', 'fx2', 'amp', 'cab', 'mod', 'delay', 'rev
 // Modelos de amp e caixa de fábrica, na ordem do manual (V01). O MIDI não troca o modelo: o site só diz qual escolher
 // no pedal, e o JSON colado só pode usar estes nomes. Cada pedal pode ter só parte deles carregada (o app troca).
 export const AMPS: Record<string, string> = {
-  BogXTC1: 'Bogner Ecstasy (XTC), tom 1', BogXTC2: 'Bogner Ecstasy (XTC), tom 2', ENGP1: 'ENGL Powerball, tom 1',
-  ENGP2: 'ENGL Powerball, tom 2', Fd59Bm: "Fender '59 Bassman", Fd65Dk: "Fender '65 Darkface, limpo", Hiw103: 'Hiwatt DR103',
-  MarDSL1: 'Marshall DSL50, tom 1', MarDSL2: 'Marshall DSL50, tom 2', Mar8001: 'Marshall JCM800, tom 1',
-  Mar8002: 'Marshall JCM800, tom 2', MesR1: 'Mesa Rectifier, tom 1', MesR2: 'Mesa Rectifier, tom 2',
-  MesR3: 'Mesa Rectifier, tom 3', OgG120: 'Orange Graphic 120', Pey51501: 'Peavey 5150, tom 1',
-  Pey51502: 'Peavey 5150, tom 2', Pey6505: 'Peavey 6505', RanT21: 'Randall T2, tom 1', RanT22: 'Randall T2, tom 2',
-  RoJC120: 'Roland JC-120, limpo', SLO1001: 'Soldano SLO-100, tom 1', SLO1002: 'Soldano SLO-100, tom 2',
-  SLO1003: 'Soldano SLO-100, tom 3', VXAC30: 'Vox AC30', ApSVTVR: 'Ampeg SVT VR (baixo)', ApSVTCL: 'Ampeg SVT-CL (baixo)',
-  Adn900: 'Ashdown ABM900 (baixo)', Hiw320: 'Hiwatt Jupiter 320 (baixo)', MarSup: 'Marshall Super Bass (baixo)',
+  BogXTC1: 'Bogner Ecstasy (XTC), tom 1',
+  BogXTC2: 'Bogner Ecstasy (XTC), tom 2',
+  ENGP1: 'ENGL Powerball, tom 1',
+  ENGP2: 'ENGL Powerball, tom 2',
+  Fd59Bm: "Fender '59 Bassman",
+  Fd65Dk: "Fender '65 Darkface, limpo",
+  Hiw103: 'Hiwatt DR103',
+  MarDSL1: 'Marshall DSL50, tom 1',
+  MarDSL2: 'Marshall DSL50, tom 2',
+  Mar8001: 'Marshall JCM800, tom 1',
+  Mar8002: 'Marshall JCM800, tom 2',
+  MesR1: 'Mesa Rectifier, tom 1',
+  MesR2: 'Mesa Rectifier, tom 2',
+  MesR3: 'Mesa Rectifier, tom 3',
+  OgG120: 'Orange Graphic 120',
+  Pey51501: 'Peavey 5150, tom 1',
+  Pey51502: 'Peavey 5150, tom 2',
+  Pey6505: 'Peavey 6505',
+  RanT21: 'Randall T2, tom 1',
+  RanT22: 'Randall T2, tom 2',
+  RoJC120: 'Roland JC-120, limpo',
+  SLO1001: 'Soldano SLO-100, tom 1',
+  SLO1002: 'Soldano SLO-100, tom 2',
+  SLO1003: 'Soldano SLO-100, tom 3',
+  VXAC30: 'Vox AC30',
+  ApSVTVR: 'Ampeg SVT VR (baixo)',
+  ApSVTCL: 'Ampeg SVT-CL (baixo)',
+  Adn900: 'Ashdown ABM900 (baixo)',
+  Hiw320: 'Hiwatt Jupiter 320 (baixo)',
+  MarSup: 'Marshall Super Bass (baixo)',
 }
 export const CABS: Record<string, string> = {
-  Bog412A: 'Bogner 4x12, tom A', Bog412B: 'Bogner 4x12, tom B', Eng412A: 'ENGL 4x12 Vintage 30, tom A',
-  Eng412B: 'ENGL 4x12 Vintage 30, tom B', FdTR212: 'Fender Twin Reverb 2x12', Fd59BM410: "Fender '59 Bassman 4x10",
-  Hiw412: 'Hiwatt 4x12', Mar412A: 'Marshall 4x12 V30, tom A', Mar412B: 'Marshall 4x12 V30, tom B',
-  Mar96412A: 'Marshall 1960B 4x12, tom A', Mar96412B: 'Marshall 1960B 4x12, tom B', Mes412A: 'Mesa 4x12 V30, tom A',
-  Mes412B: 'Mesa 4x12 V30, tom B', Mes412C: 'Mesa 4x12 V30, tom C', Og412: 'Orange 4x12 V30',
-  pey412A: 'Peavey 5150 4x12, tom A', pey412B: 'Peavey 5150 4x12, tom B', peyVk412: 'Peavey Valveking 4x12',
-  Ran112A: 'Randall 1x12, tom A', Ran112B: 'Randall 1x12, tom B', Ran112C: 'Randall 1x12, tom C',
-  SLO412A: 'Soldano 4x12, tom A', SLO412B: 'Soldano 4x12, tom B', SLO412C: 'Soldano 4x12, tom C',
-  AC30212: 'Vox AC30 2x12', AP810: 'Ampeg 8x10 (baixo)', Ap410: 'Ampeg SVT 4x10 (baixo)', Adn410: 'Ashdown 4x10 (baixo)',
-  HiwB410: 'Hiwatt 4x10 (baixo)', Mar412: 'Marshall 4x12',
+  Bog412A: 'Bogner 4x12, tom A',
+  Bog412B: 'Bogner 4x12, tom B',
+  Eng412A: 'ENGL 4x12 Vintage 30, tom A',
+  Eng412B: 'ENGL 4x12 Vintage 30, tom B',
+  FdTR212: 'Fender Twin Reverb 2x12',
+  Fd59BM410: "Fender '59 Bassman 4x10",
+  Hiw412: 'Hiwatt 4x12',
+  Mar412A: 'Marshall 4x12 V30, tom A',
+  Mar412B: 'Marshall 4x12 V30, tom B',
+  Mar96412A: 'Marshall 1960B 4x12, tom A',
+  Mar96412B: 'Marshall 1960B 4x12, tom B',
+  Mes412A: 'Mesa 4x12 V30, tom A',
+  Mes412B: 'Mesa 4x12 V30, tom B',
+  Mes412C: 'Mesa 4x12 V30, tom C',
+  Og412: 'Orange 4x12 V30',
+  pey412A: 'Peavey 5150 4x12, tom A',
+  pey412B: 'Peavey 5150 4x12, tom B',
+  peyVk412: 'Peavey Valveking 4x12',
+  Ran112A: 'Randall 1x12, tom A',
+  Ran112B: 'Randall 1x12, tom B',
+  Ran112C: 'Randall 1x12, tom C',
+  SLO412A: 'Soldano 4x12, tom A',
+  SLO412B: 'Soldano 4x12, tom B',
+  SLO412C: 'Soldano 4x12, tom C',
+  AC30212: 'Vox AC30 2x12',
+  AP810: 'Ampeg 8x10 (baixo)',
+  Ap410: 'Ampeg SVT 4x10 (baixo)',
+  Adn410: 'Ashdown 4x10 (baixo)',
+  HiwB410: 'Hiwatt 4x10 (baixo)',
+  Mar412: 'Marshall 4x12',
 }
 
 const ON_CC: Record<Block, number> = { fx1: 20, fx2: 21, amp: 23, cab: 24, mod: 25, delay: 26, reverb: 27, eq: 28 }
@@ -50,18 +91,30 @@ const EQ_CC = [91, 92, 93, 94, 95, 96, 97, 33]
 
 export function paramCC(block: Block, type: number, index: number): number {
   switch (block) {
-    case 'fx1': return (type === 3 ? 51 : 50) + index // o compressor sozinho começa no limiar dele (CC51)
-    case 'fx2': return (type >= 8 ? 68 : 57) + index // pitch e wahs usam os CCs da modulação
-    case 'amp': return 60 + index
-    case 'cab': return 65 + index
-    case 'mod': return 68 + index
-    case 'delay': return 74 + index
-    case 'reverb': return 85 + index
-    case 'eq': return EQ_CC[index]!
+    case 'fx1':
+      return (type === 3 ? 51 : 50) + index // o compressor sozinho começa no limiar dele (CC51)
+    case 'fx2':
+      return (type >= 8 ? 68 : 57) + index // pitch e wahs usam os CCs da modulação
+    case 'amp':
+      return 60 + index
+    case 'cab':
+      return 65 + index
+    case 'mod':
+      return 68 + index
+    case 'delay':
+      return 74 + index
+    case 'reverb':
+      return 85 + index
+    case 'eq':
+      return EQ_CC[index]!
   }
 }
 
-export const cc = (control: number, value: number): number[] => [0xb0, control, Math.round(Math.min(1, Math.max(0, value)) * 127)]
+export const cc = (control: number, value: number): number[] => [
+  0xb0,
+  control,
+  Math.round(Math.min(1, Math.max(0, value)) * 127),
+]
 
 // Mensagens que levam o preset `slot` (1–64, como na tela) a este timbre: troca de preset, depois o tipo de
 // cada bloco antes dos parâmetros (o significado deles depende do tipo) e por fim o liga/desliga.
@@ -86,19 +139,34 @@ export function pack7(raw: number[]): number[] {
   const out: number[] = []
   for (let i = 0; i < raw.length; i += 7) {
     const group = raw.slice(i, i + 7)
-    out.push(group.reduce((msb, b, j) => msb | (b >> 7) << j, 0), ...group.map(b => b & 0x7f))
+    out.push(
+      group.reduce((msb, b, j) => msb | ((b >> 7) << j), 0),
+      ...group.map(b => b & 0x7f),
+    )
   }
   return out
 }
 
 export function sysex(seq: number, command: number, data: number[]): number[] {
-  const u16 = (n: number) => [n & 0xff, n >> 8 & 0xff]
-  return [0xf0, 0x7d, 0x4e, 0x43, 0x70, ...pack7([0x02, ...u16(seq), ...u16(command), ...u16(data.length), ...data]), 0xf7]
+  const u16 = (n: number) => [n & 0xff, (n >> 8) & 0xff]
+  return [
+    0xf0,
+    0x7d,
+    0x4e,
+    0x43,
+    0x70,
+    ...pack7([0x02, ...u16(seq), ...u16(command), ...u16(data.length), ...data]),
+    0xf7,
+  ]
 }
 
 // Nomes dos presets de fábrica e do app têm até 8 caracteres ASCII; acento vira a letra sem acento
 export const NAME_MAX = 8
-export const presetName = (text: string) => text.normalize('NFD').replace(/[^\x20-\x7e]/g, '').slice(0, NAME_MAX)
+export const presetName = (text: string) =>
+  text
+    .normalize('NFD')
+    .replace(/[^\x20-\x7e]/g, '')
+    .slice(0, NAME_MAX)
 
 // Renomeia o preset ativo (comando 0x6d, subcomando 0x08, como o app faz). Vale até trocar de preset: o MASTER salva.
 export function renameMessage(name: string, seq: number): number[] {
@@ -111,7 +179,7 @@ const RATE_FB = ['Velocidade', 'Realimentação', 'Mix', 'Volume']
 const TIME_FB = (...mid: string[]) => ['Tempo', 'Realimentação', ...mid, 'Mix', 'Volume']
 const REV = (third: string, fourth: string) => ['Decaimento', 'Pré-delay', third, fourth, 'Mix', 'Volume']
 
-export const TYPES: Partial<Record<Block, { name: string, params: string[] }[]>> = {
+export const TYPES: Partial<Record<Block, { name: string; params: string[] }[]>> = {
   fx1: [
     { name: 'Gate', params: ['Limiar'] },
     { name: 'Auto Gate', params: [] },
@@ -170,10 +238,17 @@ const FIXED: Partial<Record<Block, string[]>> = {
 }
 
 export const BLOCK_NAMES: Record<Block, string> = {
-  fx1: 'Gate / compressor', fx2: 'Drive', amp: 'Amp', cab: 'Caixa', mod: 'Modulação', delay: 'Delay', reverb: 'Reverb', eq: 'EQ',
+  fx1: 'Gate / compressor',
+  fx2: 'Drive',
+  amp: 'Amp',
+  cab: 'Caixa',
+  mod: 'Modulação',
+  delay: 'Delay',
+  reverb: 'Reverb',
+  eq: 'EQ',
 }
 
-export function blockInfo(block: Block, state: BlockState): { name: string, params: string[] } {
+export function blockInfo(block: Block, state: BlockState): { name: string; params: string[] } {
   const fixed = FIXED[block]
   if (fixed) return { name: BLOCK_NAMES[block], params: fixed }
   return TYPES[block]?.[state.type ?? 0] ?? { name: '?', params: [] }

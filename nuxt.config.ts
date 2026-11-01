@@ -9,7 +9,10 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'pt-BR' },
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Timbres de músicas para a pedaleira LIVTRA NanoCore, enviados pelo navegador via USB MIDI.' },
+        {
+          name: 'description',
+          content: 'Timbres de músicas para a pedaleira LIVTRA NanoCore, enviados pelo navegador via USB MIDI.',
+        },
         { name: 'theme-color', content: '#111315' },
       ],
       // relativos: o GitHub Pages serve o site em /Tonebook/

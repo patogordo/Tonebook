@@ -1,0 +1,7 @@
+# Markdown fica como está: as tabelas do prompt e da documentação são conferidas pelos testes e quebradas à mão
+*.md
+pnpm-lock.yaml
+.nuxt
+.output
+tools/*.py
+tools/*.swift
